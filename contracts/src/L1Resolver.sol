@@ -65,4 +65,23 @@ contract OffchainResolver is IExtendedResolver, SupportsInterface {
     function supportsInterface(bytes4 interfaceID) public pure override returns(bool) {
         return interfaceID == type(IExtendedResolver).interfaceId || super.supportsInterface(interfaceID);
     }
+
+    /**
+     * Sets the URL for the resolver service. Only callable by the signers.
+     */
+    function setURL(string calldata _url) external {
+        require(signers[msg.sender], "Not a signer");
+        url = _url;
+    }
+
+    /**
+     * Sets the signers for the resolver service. Only callable by the signers.
+     */
+    function setSigners(address[] calldata _signers) external {
+        require(signers[msg.sender], "Not a signer");
+        for(uint i = 0; i < _signers.length; i++) {
+            signers[_signers[i]] = true;
+        }
+        emit NewSigners(_signers);
+    }
 }
