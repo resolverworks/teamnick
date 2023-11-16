@@ -1,0 +1,7 @@
+name = "teamnick-gateway"
+main = "src/index.ts"
+compatibility_date = "2023-03-15"
+
+# The necessary secrets are:
+# - PRIVATE_KEY
+# Run `echo <VALUE> | wrangler secret put <NAME>` for each of these
