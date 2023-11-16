@@ -3,7 +3,8 @@ import hre from 'hardhat'
 async function main() {
   const contractName = 'TeamNick'
   const args = [
-    '0x534631Bcf33BDb069fB20A93d2fdb9e4D4dD42CF', // initialOwner
+    '0x534631Bcf33BDb069fB20A93d2fdb9e4D4dD42CF', // _initialOwner
+    'https://teamnick.xyz/nft/', // _baseUri
   ]
 
   const contract = await hre.viem.deployContract(contractName, args)

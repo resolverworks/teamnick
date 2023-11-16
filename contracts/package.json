@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "hardhat node",
     "compile": "hardhat compile",
-    "storage": "hardhat check",
+    "node": "hardhat node",
     "deploy:local-registry": "hardhat run scripts/deploy-l2-registry.ts --network localhost",
     "deploy:goerli-gateway": "hardhat run scripts/deploy-l1-resolver.ts --network mainnet",
     "deploy:l1-gateway": "hardhat run scripts/deploy-l1-resolver.ts --network mainnet",

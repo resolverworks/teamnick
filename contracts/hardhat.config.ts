@@ -14,6 +14,11 @@ if (!BASESCAN_API_KEY) throw new Error('BASESCAN_API_KEY must be set')
 
 const config: HardhatUserConfig = {
   networks: {
+    hardhat: {
+      forking: {
+        url: process.env.MAINNET_RPC || 'https://eth.llamarpc.com',
+      },
+    },
     goerli: {
       url: process.env.GOERLI_RPC || 'https://rpc.ankr.com/eth_goerli',
       accounts: [DEPLOYER_KEY],
