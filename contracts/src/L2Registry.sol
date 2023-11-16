@@ -72,6 +72,16 @@ contract TeamNick is ERC721, ERC721Enumerable, ERC721Pausable, Ownable {
         return records[node].avatar;
     }
 
+    function getEthAddressByName(string calldata name) public view returns (address) {
+        uint256 node = hashName(name);
+        return records[node].ethAddress;
+    }
+
+    function getAvatarByName(string calldata name) public view returns (string memory) {
+        uint256 node = hashName(name);
+        return records[node].avatar;
+    }
+
     function _baseURI() internal view override returns (string memory) {
         return baseUri;
     }
