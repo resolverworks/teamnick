@@ -18,6 +18,10 @@ const config: HardhatUserConfig = {
       url: process.env.GOERLI_RPC || 'https://rpc.ankr.com/eth_goerli',
       accounts: [DEPLOYER_KEY],
     },
+    mainnet: {
+      url: process.env.MAINNET_RPC || 'https://eth.llamarpc.com',
+      accounts: [DEPLOYER_KEY],
+    },
     base: {
       url: process.env.BASE_RPC || 'https://base.llamarpc.com',
       accounts: [DEPLOYER_KEY],
@@ -39,6 +43,8 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: {
       goerli: ETHERSCAN_API_KEY,
+      mainnet: ETHERSCAN_API_KEY,
+      base: BASESCAN_API_KEY,
     },
   },
   paths: {
