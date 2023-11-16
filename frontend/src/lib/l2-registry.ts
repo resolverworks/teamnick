@@ -1,7 +1,7 @@
 import { Address } from 'viem'
 
 export const l2Registry = {
-  address: '0x' as Address,
+  address: '0x55027d3dbbcea0327ef73efd74ba0af42a13a966' as Address,
   abi: [
     {
       inputs: [
@@ -391,12 +391,50 @@ export const l2Registry = {
     {
       inputs: [
         {
+          internalType: 'string',
+          name: 'name',
+          type: 'string',
+        },
+      ],
+      name: 'getAvatarByName',
+      outputs: [
+        {
+          internalType: 'string',
+          name: '',
+          type: 'string',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
           internalType: 'uint256',
           name: 'node',
           type: 'uint256',
         },
       ],
       name: 'getEthAddress',
+      outputs: [
+        {
+          internalType: 'address',
+          name: '',
+          type: 'address',
+        },
+      ],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [
+        {
+          internalType: 'string',
+          name: 'name',
+          type: 'string',
+        },
+      ],
+      name: 'getEthAddressByName',
       outputs: [
         {
           internalType: 'address',
