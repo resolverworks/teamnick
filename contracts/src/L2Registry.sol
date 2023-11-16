@@ -7,13 +7,77 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TeamNick is ERC721, ERC721Enumerable, ERC721Pausable, Ownable {
-    constructor(address initialOwner)
-        ERC721("TeamNick", "NICK")
-        Ownable(initialOwner)
-    {}
+    error Unauthorized();
 
-    function _baseURI() internal pure override returns (string memory) {
-        return "https://teamnick.xyz/nft/";
+    struct Record {
+        address ethAddress;
+        string avatar;
+    }
+
+    // uint256 is the NFT token ID and a hash of the name
+    mapping (uint256 => Record) records;
+    string public baseUri;
+
+
+    constructor(address _initialOwner, string memory _baseUri)
+        ERC721("TeamNick", "NICK")
+        Ownable(_initialOwner)
+    {
+        baseUri = _baseUri;
+    }
+
+    // Permits modifications only by the owner of the specified node.
+    modifier authorised(uint256 node) {
+        if (ownerOf(node) != msg.sender) {
+            revert Unauthorized();
+        }
+
+        _;
+    }
+
+    function recordExists(uint256 node) public view returns (bool) {
+        return ownerOf(node) != address(0x0);
+    }
+
+    function hashName(string calldata name) public pure returns (uint256) {
+        return uint256(keccak256(abi.encodePacked(name)));
+    }
+
+    function register(string calldata name, address owner, address ethAddress, string calldata avatar) public {
+        uint256 node = hashName(name);
+        
+        _safeMint(owner, node); // this will fail if the node is already registered
+        records[node].ethAddress = ethAddress;
+        records[node].avatar = avatar;
+    }
+
+    function updateEthAddress(uint256 node, address ethAddress) public authorised(node) {
+        records[node].ethAddress = ethAddress;
+    }
+
+    function updateAvatar(uint256 node, string calldata avatar) public authorised(node) {
+        records[node].avatar = avatar;
+    }
+
+    function updateRecords(uint256 node, address ethAddress, string calldata avatar) public authorised(node) {
+        this.updateEthAddress(node, ethAddress);
+        this.updateAvatar(node, avatar);
+    }
+
+    function getEthAddress(uint256 node) public view returns (address) {
+        return records[node].ethAddress;
+    }
+
+    function getAvatar(uint256 node) public view returns (string memory) {
+        return records[node].avatar;
+    }
+
+    function _baseURI() internal view override returns (string memory) {
+        return baseUri;
+    }
+
+    function setBaseURI(string memory _baseUri) public onlyOwner {
+        baseUri = _baseUri;
     }
 
     function pause() public onlyOwner {
@@ -22,10 +86,6 @@ contract TeamNick is ERC721, ERC721Enumerable, ERC721Pausable, Ownable {
 
     function unpause() public onlyOwner {
         _unpause();
-    }
-
-    function safeMint(address to, uint256 tokenId) public onlyOwner {
-        _safeMint(to, tokenId);
     }
 
     // The following functions are overrides required by Solidity.
