@@ -18,6 +18,8 @@ import { usePonder, Name } from "@/hooks/usePonder";
 
 export default function Home() {
   const [name, setName] = useState("");
+  const [recentName, setRecentName] = useState("");
+
   const [errorMessage, setErrorMessage] = useState("");
 
   const validateInput = (input) => {
@@ -55,7 +57,14 @@ export default function Home() {
     () => ({
       ...l2Registry,
       functionName: "register",
-      args: address ? [name, address, address, ""] : undefined,
+      args: address
+        ? [
+            name,
+            address,
+            address,
+            "https://cdn.pixabay.com/photo/2012/05/04/10/17/sun-47083_1280.png",
+          ]
+        : undefined,
     }),
     [name, address]
   );
@@ -66,9 +75,16 @@ export default function Home() {
 
   const handleMintClick = useCallback(() => {
     if (tx.write) {
+      setRecentName(name);
       tx.write();
     }
   }, [tx.write]);
+
+  useEffect(() => {
+    if (receipt.isSuccess || receipt.isError) {
+      setName(""); // Clear the input field when transaction is completed
+    }
+  }, [receipt]);
 
   const { data, isError, isLoading } = useContractReads({
     contracts: [
@@ -139,7 +155,21 @@ export default function Home() {
       <div className="text-center">
         {(() => {
           if (receipt.isSuccess) {
-            return <p>success! {name}.teamnick.eth is live!</p>;
+            return (
+              <p>
+                {"success! "}
+                <a
+                  href={`https://app.ens.domains/${name.name}.teamnick.eth`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className=" hover:text-blue-800 font-bold "
+                >
+                  {recentName}
+                  <span className=" font-normal">.teamnick.eth </span>
+                </a>
+                is live!
+              </p>
+            );
           }
 
           if (receipt.isError) {
