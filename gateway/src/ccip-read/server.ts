@@ -5,7 +5,6 @@ import { Buffer } from 'buffer'
 import { BytesLike, ethers } from 'ethers'
 import { Result, hexConcat } from 'ethers/lib/utils'
 
-import { Env } from '../env'
 import { Database, DatabaseResult } from './db'
 
 const Resolver = new ethers.utils.Interface(Resolver_abi)
@@ -27,23 +26,23 @@ const queryHandlers: {
     db: Database,
     name: string,
     args: Result,
-    env: Env
+    contract: ethers.Contract
   ) => Promise<DatabaseResult>
 } = {
-  'addr(bytes32)': async (db, name, _args, env) => {
-    const { addr, ttl } = await db.addr(name, 60, env)
+  'addr(bytes32)': async (db, name, _args, contract) => {
+    const { addr, ttl } = await db.addr(name, 60, contract)
     return { result: [addr], ttl }
   },
-  'addr(bytes32,uint256)': async (db, name, args, env) => {
-    const { addr, ttl } = await db.addr(name, args[0], env)
+  'addr(bytes32,uint256)': async (db, name, args, contract) => {
+    const { addr, ttl } = await db.addr(name, args[0], contract)
     return { result: [addr], ttl }
   },
-  'text(bytes32,string)': async (db, name, args, env) => {
-    const { value, ttl } = await db.text(name, args[0], env)
+  'text(bytes32,string)': async (db, name, args, contract) => {
+    const { value, ttl } = await db.text(name, args[0], contract)
     return { result: [value], ttl }
   },
-  'contenthash(bytes32)': async (db, name, _args, env) => {
-    const { contenthash, ttl } = await db.contenthash(name, env)
+  'contenthash(bytes32)': async (db, name, _args) => {
+    const { contenthash, ttl } = await db.contenthash(name)
     return { result: [contenthash], ttl }
   },
 }
@@ -51,8 +50,7 @@ const queryHandlers: {
 async function query(
   db: Database,
   name: string,
-  data: string,
-  env: Env
+  data: string
 ): Promise<{ result: BytesLike; validUntil: number }> {
   // Parse the data nested inside the second argument to `resolve`
   const { signature, args } = Resolver.parseTransaction({ data })
@@ -70,7 +68,18 @@ async function query(
     throw new Error(`Unsupported query function ${signature}`)
   }
 
-  const { result, ttl } = await handler(db, name, args.slice(1), env)
+  const provider = new ethers.providers.JsonRpcProvider()
+  const contract = new ethers.Contract(
+    // TODO: put L2 contract address here once deployed
+    '', // address
+    [
+      'function getEthAddressByName(string calldata name) public view returns (address)',
+      'function getAvatarByName(string calldata name) public view returns (string memory)',
+    ], // relevant ABI
+    provider // provider
+  )
+
+  const { result, ttl } = await handler(db, name, args.slice(1), contract)
 
   return {
     result: Resolver.encodeFunctionResult(signature, result),
@@ -80,8 +89,7 @@ async function query(
 
 export function makeServer(
   signer: ethers.utils.SigningKey,
-  db: Database | Promise<Database>,
-  env: Env
+  db: Database | Promise<Database>
 ) {
   const server = new Server()
   server.add(IResolverService_abi, [
@@ -91,7 +99,7 @@ export function makeServer(
         const name = decodeDnsName(Buffer.from(encodedName.slice(2), 'hex'))
 
         // Query the database
-        const { result, validUntil } = await query(await db, name, data, env)
+        const { result, validUntil } = await query(await db, name, data)
 
         // Hash and sign the response
         let messageHash = ethers.utils.solidityKeccak256(
@@ -117,8 +125,7 @@ export function makeServer(
 export function makeApp(
   signer: ethers.utils.SigningKey,
   path: string,
-  db: Database | Promise<Database>,
-  env: Env
+  db: Database | Promise<Database>
 ) {
-  return makeServer(signer, db, env).makeApp(path)
+  return makeServer(signer, db).makeApp(path)
 }

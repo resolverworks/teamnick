@@ -1,4 +1,4 @@
-import { Env } from '../env'
+import type { Contract } from 'ethers'
 
 type PromiseOrResult<T> = T | Promise<T>
 
@@ -10,16 +10,15 @@ export interface Database {
   addr(
     name: string,
     coinType: number,
-    env: Env
+    contract: Contract
   ): PromiseOrResult<{ addr: string; ttl: number }>
   text(
     name: string,
     key: string,
-    env: Env
+    contract: Contract
   ): PromiseOrResult<{ value: string; ttl: number }>
   contenthash(
-    name: string,
-    env: Env
+    name: string
   ): PromiseOrResult<{ contenthash: string; ttl: number }>
 }
 
@@ -30,35 +29,34 @@ export interface DatabaseResult {
 
 // TODO: get data from L2 contract
 export const database: Database = {
-  async addr(name, coinType, env) {
+  async addr(name, coinType, contract) {
     try {
-      const nameData = await get(name, env)
+      let address
 
-      const addr = nameData?.addresses?.[coinType] || ZERO_ADDRESS
+      // only handle ETH for now
+      if (coinType === 60) {
+        address = await contract.getEthAddressByName(name)
+      }
+
+      const addr = address || ZERO_ADDRESS
       return { addr, ttl: TTL }
     } catch (error) {
       console.error('Error resolving addr', error)
       return { addr: '', ttl: TTL }
     }
   },
-  async contenthash(name, env) {
-    try {
-      const nameData = await get(name, env)
-
-      const contenthash = nameData?.contenthash || EMPTY_CONTENT_HASH
-      return { contenthash, ttl: TTL }
-    } catch (error) {
-      console.error('Error resolving contenthash', error)
-      return {
-        contenthash: EMPTY_CONTENT_HASH,
-        ttl: TTL,
-      }
-    }
+  async contenthash(name) {
+    const contenthash = EMPTY_CONTENT_HASH
+    return { contenthash, ttl: TTL }
   },
-  async text(name, key, env) {
+  async text(name, key, contract) {
     try {
-      const nameData = await get(name, env)
-      const value = nameData?.texts?.[key] || ''
+      let value = ''
+
+      // only handle avatar for now
+      if (key === 'avatar') {
+        value = await contract.getAvatarByName(name)
+      }
 
       return { value, ttl: TTL }
     } catch (error) {
