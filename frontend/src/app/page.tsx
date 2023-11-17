@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 
 import { l2Registry } from "@/lib/l2-registry";
 import { Button, Input, Typography } from "@ensdomains/thorin";
@@ -12,10 +12,16 @@ import {
   useWaitForTransaction,
 } from "wagmi";
 
+import { debounce } from "lodash";
+
 import { usePonder, Name } from "@/hooks/usePonder";
 
 export default function Home() {
   const [name, setName] = useState("");
+  const setNameDebounced = useCallback(
+    debounce((value: string) => setName(value), 500),
+    []
+  );
   const { address } = useAccount();
 
   // Prepare contract write configuration
@@ -55,8 +61,13 @@ export default function Home() {
   const ponder = usePonder();
 
   const handleInputChange = (e: any) => {
-    setName(e.target.value);
+    setNameDebounced(e.target.value);
   };
+  useEffect(() => {
+    return () => {
+      setNameDebounced.cancel();
+    };
+  }, [setNameDebounced]);
 
   const totalSupply =
     data && data[1] ? Number(data[1].result).toString() : "Unavailable";
