@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TeamNick is ERC721, ERC721Enumerable, ERC721Pausable, Ownable {
+    error InvalidName();
     error Unauthorized();
 
     struct Record {
@@ -44,9 +45,13 @@ contract TeamNick is ERC721, ERC721Enumerable, ERC721Pausable, Ownable {
     }
 
     function register(string calldata name, address owner, address ethAddress, string calldata avatar) public {
-        uint256 node = hashName(name);
+        // Prevent the registration of empty names
+        if (bytes(name).length == 0) {
+            revert InvalidName();
+        }
         
-        _safeMint(owner, node); // this will fail if the node is already registered
+        uint256 node = hashName(name);
+        _safeMint(owner, node); // This will fail if the node is already registered
         records[node].ethAddress = ethAddress;
         records[node].avatar = avatar;
     }
