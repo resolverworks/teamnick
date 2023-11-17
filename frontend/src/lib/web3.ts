@@ -1,9 +1,9 @@
 import { getDefaultWallets } from '@rainbow-me/rainbowkit'
 import { configureChains, createConfig } from 'wagmi'
-import { base, hardhat } from 'wagmi/chains'
+import { baseGoerli } from 'wagmi/chains'
 import { publicProvider } from 'wagmi/providers/public'
 
-export const chains = [hardhat, base]
+export const chains = [baseGoerli]
 
 export const { publicClient, webSocketPublicClient } = configureChains(chains, [
   publicProvider(),

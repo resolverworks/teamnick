@@ -1,185 +1,86 @@
 import { Address } from 'viem'
 
 export const l2Registry = {
-  address: '0x55027d3dbbcea0327ef73efd74ba0af42a13a966' as Address,
+  address: '0xd966A7be6d7dC7269D302B5e6D884B221E1a72B4' as Address,
   abi: [
     {
       inputs: [
-        {
-          internalType: 'address',
-          name: '_initialOwner',
-          type: 'address',
-        },
-        {
-          internalType: 'string',
-          name: '_baseUri',
-          type: 'string',
-        },
+        { internalType: 'address', name: '_initialOwner', type: 'address' },
+        { internalType: 'string', name: '_baseUri', type: 'string' },
       ],
       stateMutability: 'nonpayable',
       type: 'constructor',
     },
-    {
-      inputs: [],
-      name: 'ERC721EnumerableForbiddenBatchMint',
-      type: 'error',
-    },
+    { inputs: [], name: 'ERC721EnumerableForbiddenBatchMint', type: 'error' },
     {
       inputs: [
-        {
-          internalType: 'address',
-          name: 'sender',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'tokenId',
-          type: 'uint256',
-        },
-        {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
+        { internalType: 'address', name: 'sender', type: 'address' },
+        { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
+        { internalType: 'address', name: 'owner', type: 'address' },
       ],
       name: 'ERC721IncorrectOwner',
       type: 'error',
     },
     {
       inputs: [
-        {
-          internalType: 'address',
-          name: 'operator',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'tokenId',
-          type: 'uint256',
-        },
+        { internalType: 'address', name: 'operator', type: 'address' },
+        { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
       ],
       name: 'ERC721InsufficientApproval',
       type: 'error',
     },
     {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'approver',
-          type: 'address',
-        },
-      ],
+      inputs: [{ internalType: 'address', name: 'approver', type: 'address' }],
       name: 'ERC721InvalidApprover',
       type: 'error',
     },
     {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'operator',
-          type: 'address',
-        },
-      ],
+      inputs: [{ internalType: 'address', name: 'operator', type: 'address' }],
       name: 'ERC721InvalidOperator',
       type: 'error',
     },
     {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
-      ],
+      inputs: [{ internalType: 'address', name: 'owner', type: 'address' }],
       name: 'ERC721InvalidOwner',
       type: 'error',
     },
     {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'receiver',
-          type: 'address',
-        },
-      ],
+      inputs: [{ internalType: 'address', name: 'receiver', type: 'address' }],
       name: 'ERC721InvalidReceiver',
       type: 'error',
     },
     {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'sender',
-          type: 'address',
-        },
-      ],
+      inputs: [{ internalType: 'address', name: 'sender', type: 'address' }],
       name: 'ERC721InvalidSender',
       type: 'error',
     },
     {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'tokenId',
-          type: 'uint256',
-        },
-      ],
+      inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
       name: 'ERC721NonexistentToken',
       type: 'error',
     },
     {
       inputs: [
-        {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'index',
-          type: 'uint256',
-        },
+        { internalType: 'address', name: 'owner', type: 'address' },
+        { internalType: 'uint256', name: 'index', type: 'uint256' },
       ],
       name: 'ERC721OutOfBoundsIndex',
       type: 'error',
     },
+    { inputs: [], name: 'EnforcedPause', type: 'error' },
+    { inputs: [], name: 'ExpectedPause', type: 'error' },
+    { inputs: [], name: 'InvalidName', type: 'error' },
     {
-      inputs: [],
-      name: 'EnforcedPause',
-      type: 'error',
-    },
-    {
-      inputs: [],
-      name: 'ExpectedPause',
-      type: 'error',
-    },
-    {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
-      ],
+      inputs: [{ internalType: 'address', name: 'owner', type: 'address' }],
       name: 'OwnableInvalidOwner',
       type: 'error',
     },
     {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'account',
-          type: 'address',
-        },
-      ],
+      inputs: [{ internalType: 'address', name: 'account', type: 'address' }],
       name: 'OwnableUnauthorizedAccount',
       type: 'error',
     },
-    {
-      inputs: [],
-      name: 'Unauthorized',
-      type: 'error',
-    },
+    { inputs: [], name: 'Unauthorized', type: 'error' },
     {
       anonymous: false,
       inputs: [
@@ -267,16 +168,73 @@ export const l2Registry = {
       inputs: [
         {
           indexed: true,
+          internalType: 'uint256',
+          name: 'node',
+          type: 'uint256',
+        },
+        {
+          indexed: true,
           internalType: 'address',
-          name: 'from',
+          name: 'ethAddress',
+          type: 'address',
+        },
+        {
+          indexed: false,
+          internalType: 'string',
+          name: 'avatar',
+          type: 'string',
+        },
+      ],
+      name: 'RecordsUpdated',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'uint256',
+          name: 'node',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'string',
+          name: 'name',
+          type: 'string',
+        },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'owner',
           type: 'address',
         },
         {
           indexed: true,
           internalType: 'address',
-          name: 'to',
+          name: 'ethAddress',
           type: 'address',
         },
+        {
+          indexed: false,
+          internalType: 'string',
+          name: 'avatar',
+          type: 'string',
+        },
+      ],
+      name: 'Registered',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'from',
+          type: 'address',
+        },
+        { indexed: true, internalType: 'address', name: 'to', type: 'address' },
         {
           indexed: true,
           internalType: 'uint256',
@@ -302,16 +260,8 @@ export const l2Registry = {
     },
     {
       inputs: [
-        {
-          internalType: 'address',
-          name: 'to',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'tokenId',
-          type: 'uint256',
-        },
+        { internalType: 'address', name: 'to', type: 'address' },
+        { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
       ],
       name: 'approve',
       outputs: [],
@@ -319,217 +269,89 @@ export const l2Registry = {
       type: 'function',
     },
     {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
-      ],
+      inputs: [{ internalType: 'address', name: 'owner', type: 'address' }],
       name: 'balanceOf',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256',
-        },
-      ],
+      outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
       inputs: [],
       name: 'baseUri',
-      outputs: [
-        {
-          internalType: 'string',
-          name: '',
-          type: 'string',
-        },
-      ],
+      outputs: [{ internalType: 'string', name: '', type: 'string' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'tokenId',
-          type: 'uint256',
-        },
-      ],
+      inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
       name: 'getApproved',
-      outputs: [
-        {
-          internalType: 'address',
-          name: '',
-          type: 'address',
-        },
-      ],
+      outputs: [{ internalType: 'address', name: '', type: 'address' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'node',
-          type: 'uint256',
-        },
-      ],
+      inputs: [{ internalType: 'uint256', name: 'node', type: 'uint256' }],
       name: 'getAvatar',
-      outputs: [
-        {
-          internalType: 'string',
-          name: '',
-          type: 'string',
-        },
-      ],
+      outputs: [{ internalType: 'string', name: '', type: 'string' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
-      inputs: [
-        {
-          internalType: 'string',
-          name: 'name',
-          type: 'string',
-        },
-      ],
+      inputs: [{ internalType: 'string', name: 'name', type: 'string' }],
       name: 'getAvatarByName',
-      outputs: [
-        {
-          internalType: 'string',
-          name: '',
-          type: 'string',
-        },
-      ],
+      outputs: [{ internalType: 'string', name: '', type: 'string' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'node',
-          type: 'uint256',
-        },
-      ],
+      inputs: [{ internalType: 'uint256', name: 'node', type: 'uint256' }],
       name: 'getEthAddress',
-      outputs: [
-        {
-          internalType: 'address',
-          name: '',
-          type: 'address',
-        },
-      ],
+      outputs: [{ internalType: 'address', name: '', type: 'address' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
-      inputs: [
-        {
-          internalType: 'string',
-          name: 'name',
-          type: 'string',
-        },
-      ],
+      inputs: [{ internalType: 'string', name: 'name', type: 'string' }],
       name: 'getEthAddressByName',
-      outputs: [
-        {
-          internalType: 'address',
-          name: '',
-          type: 'address',
-        },
-      ],
+      outputs: [{ internalType: 'address', name: '', type: 'address' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
-      inputs: [
-        {
-          internalType: 'string',
-          name: 'name',
-          type: 'string',
-        },
-      ],
+      inputs: [{ internalType: 'string', name: 'name', type: 'string' }],
       name: 'hashName',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256',
-        },
-      ],
+      outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
       stateMutability: 'pure',
       type: 'function',
     },
     {
       inputs: [
-        {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
-        {
-          internalType: 'address',
-          name: 'operator',
-          type: 'address',
-        },
+        { internalType: 'address', name: 'owner', type: 'address' },
+        { internalType: 'address', name: 'operator', type: 'address' },
       ],
       name: 'isApprovedForAll',
-      outputs: [
-        {
-          internalType: 'bool',
-          name: '',
-          type: 'bool',
-        },
-      ],
+      outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
       inputs: [],
       name: 'name',
-      outputs: [
-        {
-          internalType: 'string',
-          name: '',
-          type: 'string',
-        },
-      ],
+      outputs: [{ internalType: 'string', name: '', type: 'string' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
       inputs: [],
       name: 'owner',
-      outputs: [
-        {
-          internalType: 'address',
-          name: '',
-          type: 'address',
-        },
-      ],
+      outputs: [{ internalType: 'address', name: '', type: 'address' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'tokenId',
-          type: 'uint256',
-        },
-      ],
+      inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
       name: 'ownerOf',
-      outputs: [
-        {
-          internalType: 'address',
-          name: '',
-          type: 'address',
-        },
-      ],
+      outputs: [{ internalType: 'address', name: '', type: 'address' }],
       stateMutability: 'view',
       type: 'function',
     },
@@ -543,57 +365,23 @@ export const l2Registry = {
     {
       inputs: [],
       name: 'paused',
-      outputs: [
-        {
-          internalType: 'bool',
-          name: '',
-          type: 'bool',
-        },
-      ],
+      outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'node',
-          type: 'uint256',
-        },
-      ],
+      inputs: [{ internalType: 'uint256', name: 'node', type: 'uint256' }],
       name: 'recordExists',
-      outputs: [
-        {
-          internalType: 'bool',
-          name: '',
-          type: 'bool',
-        },
-      ],
+      outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
       inputs: [
-        {
-          internalType: 'string',
-          name: 'name',
-          type: 'string',
-        },
-        {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
-        {
-          internalType: 'address',
-          name: 'ethAddress',
-          type: 'address',
-        },
-        {
-          internalType: 'string',
-          name: 'avatar',
-          type: 'string',
-        },
+        { internalType: 'string', name: 'name', type: 'string' },
+        { internalType: 'address', name: 'owner', type: 'address' },
+        { internalType: 'address', name: 'ethAddress', type: 'address' },
+        { internalType: 'string', name: 'avatar', type: 'string' },
       ],
       name: 'register',
       outputs: [],
@@ -609,21 +397,9 @@ export const l2Registry = {
     },
     {
       inputs: [
-        {
-          internalType: 'address',
-          name: 'from',
-          type: 'address',
-        },
-        {
-          internalType: 'address',
-          name: 'to',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'tokenId',
-          type: 'uint256',
-        },
+        { internalType: 'address', name: 'from', type: 'address' },
+        { internalType: 'address', name: 'to', type: 'address' },
+        { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
       ],
       name: 'safeTransferFrom',
       outputs: [],
@@ -632,26 +408,10 @@ export const l2Registry = {
     },
     {
       inputs: [
-        {
-          internalType: 'address',
-          name: 'from',
-          type: 'address',
-        },
-        {
-          internalType: 'address',
-          name: 'to',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'tokenId',
-          type: 'uint256',
-        },
-        {
-          internalType: 'bytes',
-          name: 'data',
-          type: 'bytes',
-        },
+        { internalType: 'address', name: 'from', type: 'address' },
+        { internalType: 'address', name: 'to', type: 'address' },
+        { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
+        { internalType: 'bytes', name: 'data', type: 'bytes' },
       ],
       name: 'safeTransferFrom',
       outputs: [],
@@ -660,16 +420,8 @@ export const l2Registry = {
     },
     {
       inputs: [
-        {
-          internalType: 'address',
-          name: 'operator',
-          type: 'address',
-        },
-        {
-          internalType: 'bool',
-          name: 'approved',
-          type: 'bool',
-        },
+        { internalType: 'address', name: 'operator', type: 'address' },
+        { internalType: 'bool', name: 'approved', type: 'bool' },
       ],
       name: 'setApprovalForAll',
       outputs: [],
@@ -677,142 +429,62 @@ export const l2Registry = {
       type: 'function',
     },
     {
-      inputs: [
-        {
-          internalType: 'string',
-          name: '_baseUri',
-          type: 'string',
-        },
-      ],
+      inputs: [{ internalType: 'string', name: '_baseUri', type: 'string' }],
       name: 'setBaseURI',
       outputs: [],
       stateMutability: 'nonpayable',
       type: 'function',
     },
     {
-      inputs: [
-        {
-          internalType: 'bytes4',
-          name: 'interfaceId',
-          type: 'bytes4',
-        },
-      ],
+      inputs: [{ internalType: 'bytes4', name: 'interfaceId', type: 'bytes4' }],
       name: 'supportsInterface',
-      outputs: [
-        {
-          internalType: 'bool',
-          name: '',
-          type: 'bool',
-        },
-      ],
+      outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
       inputs: [],
       name: 'symbol',
-      outputs: [
-        {
-          internalType: 'string',
-          name: '',
-          type: 'string',
-        },
-      ],
+      outputs: [{ internalType: 'string', name: '', type: 'string' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'index',
-          type: 'uint256',
-        },
-      ],
+      inputs: [{ internalType: 'uint256', name: 'index', type: 'uint256' }],
       name: 'tokenByIndex',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256',
-        },
-      ],
+      outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
       inputs: [
-        {
-          internalType: 'address',
-          name: 'owner',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'index',
-          type: 'uint256',
-        },
+        { internalType: 'address', name: 'owner', type: 'address' },
+        { internalType: 'uint256', name: 'index', type: 'uint256' },
       ],
       name: 'tokenOfOwnerByIndex',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256',
-        },
-      ],
+      outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
-      inputs: [
-        {
-          internalType: 'uint256',
-          name: 'tokenId',
-          type: 'uint256',
-        },
-      ],
+      inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
       name: 'tokenURI',
-      outputs: [
-        {
-          internalType: 'string',
-          name: '',
-          type: 'string',
-        },
-      ],
+      outputs: [{ internalType: 'string', name: '', type: 'string' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
       inputs: [],
       name: 'totalSupply',
-      outputs: [
-        {
-          internalType: 'uint256',
-          name: '',
-          type: 'uint256',
-        },
-      ],
+      outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
       stateMutability: 'view',
       type: 'function',
     },
     {
       inputs: [
-        {
-          internalType: 'address',
-          name: 'from',
-          type: 'address',
-        },
-        {
-          internalType: 'address',
-          name: 'to',
-          type: 'address',
-        },
-        {
-          internalType: 'uint256',
-          name: 'tokenId',
-          type: 'uint256',
-        },
+        { internalType: 'address', name: 'from', type: 'address' },
+        { internalType: 'address', name: 'to', type: 'address' },
+        { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
       ],
       name: 'transferFrom',
       outputs: [],
@@ -820,13 +492,7 @@ export const l2Registry = {
       type: 'function',
     },
     {
-      inputs: [
-        {
-          internalType: 'address',
-          name: 'newOwner',
-          type: 'address',
-        },
-      ],
+      inputs: [{ internalType: 'address', name: 'newOwner', type: 'address' }],
       name: 'transferOwnership',
       outputs: [],
       stateMutability: 'nonpayable',
@@ -841,16 +507,8 @@ export const l2Registry = {
     },
     {
       inputs: [
-        {
-          internalType: 'uint256',
-          name: 'node',
-          type: 'uint256',
-        },
-        {
-          internalType: 'string',
-          name: 'avatar',
-          type: 'string',
-        },
+        { internalType: 'uint256', name: 'node', type: 'uint256' },
+        { internalType: 'string', name: 'avatar', type: 'string' },
       ],
       name: 'updateAvatar',
       outputs: [],
@@ -859,16 +517,8 @@ export const l2Registry = {
     },
     {
       inputs: [
-        {
-          internalType: 'uint256',
-          name: 'node',
-          type: 'uint256',
-        },
-        {
-          internalType: 'address',
-          name: 'ethAddress',
-          type: 'address',
-        },
+        { internalType: 'uint256', name: 'node', type: 'uint256' },
+        { internalType: 'address', name: 'ethAddress', type: 'address' },
       ],
       name: 'updateEthAddress',
       outputs: [],
@@ -877,21 +527,9 @@ export const l2Registry = {
     },
     {
       inputs: [
-        {
-          internalType: 'uint256',
-          name: 'node',
-          type: 'uint256',
-        },
-        {
-          internalType: 'address',
-          name: 'ethAddress',
-          type: 'address',
-        },
-        {
-          internalType: 'string',
-          name: 'avatar',
-          type: 'string',
-        },
+        { internalType: 'uint256', name: 'node', type: 'uint256' },
+        { internalType: 'address', name: 'ethAddress', type: 'address' },
+        { internalType: 'string', name: 'avatar', type: 'string' },
       ],
       name: 'updateRecords',
       outputs: [],
