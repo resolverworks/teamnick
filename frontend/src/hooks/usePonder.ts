@@ -1,5 +1,13 @@
 import { useFetch } from 'usehooks-ts'
 
+export type PonderResponse<T> = {
+  data: T
+  errors: {
+    message: string
+    locations: any[]
+  }[]
+}
+
 export type Name = {
   id: string
   name: string
@@ -21,7 +29,7 @@ export function usePonder() {
     }
   `
 
-  return useFetch<{ data: { names: Name[] } }>(
+  return useFetch<PonderResponse<{ names: Name[] }>>(
     'https://teamnick.up.railway.app/',
     {
       method: 'POST',
