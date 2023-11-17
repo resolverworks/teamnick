@@ -31,6 +31,10 @@ const config: HardhatUserConfig = {
       url: process.env.BASE_RPC || 'https://base.llamarpc.com',
       accounts: [DEPLOYER_KEY],
     },
+    base_goerli: {
+      url: process.env.BASE_GOERLI_RPC || 'https://goerli.base.org',
+      accounts: [DEPLOYER_KEY],
+    },
   },
   solidity: {
     compilers: [
@@ -50,6 +54,7 @@ const config: HardhatUserConfig = {
       goerli: ETHERSCAN_API_KEY,
       mainnet: ETHERSCAN_API_KEY,
       base: BASESCAN_API_KEY,
+      baseGoerli: 'BASESCAN_API_KEY', // don't need a key for base goerli
     },
   },
   paths: {

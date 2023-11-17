@@ -1,4 +1,6 @@
 import type { Contract } from 'ethers'
+import { Address, Client, parseAbi } from 'viem'
+import { readContract } from 'viem/actions'
 
 type PromiseOrResult<T> = T | Promise<T>
 
@@ -6,16 +8,24 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
 const EMPTY_CONTENT_HASH = '0x'
 const TTL = 1000
 
+const l2Registry = {
+  address: '0xb3374c73962559bed06e269e54ce99b6ba611ad5' as Address,
+  abi: parseAbi([
+    'function getEthAddressByName(string calldata name) public view returns (address)',
+    'function getAvatarByName(string calldata name) public view returns (string memory)',
+  ]),
+}
+
 export interface Database {
   addr(
     name: string,
     coinType: number,
-    contract: Contract
+    client: Client
   ): PromiseOrResult<{ addr: string; ttl: number }>
   text(
     name: string,
     key: string,
-    contract: Contract
+    client: Client
   ): PromiseOrResult<{ value: string; ttl: number }>
   contenthash(
     name: string
@@ -29,33 +39,40 @@ export interface DatabaseResult {
 
 // TODO: get data from L2 contract
 export const database: Database = {
-  async addr(name, coinType, contract) {
+  async addr(name, coinType, client) {
     try {
-      let address
+      let address = ZERO_ADDRESS
 
       // only handle ETH for now
       if (coinType === 60) {
-        address = await contract.getEthAddressByName(name)
+        address = await readContract(client, {
+          ...l2Registry,
+          functionName: 'getEthAddressByName',
+          args: [name],
+        })
       }
 
-      const addr = address || ZERO_ADDRESS
-      return { addr, ttl: TTL }
+      return { addr: address, ttl: TTL }
     } catch (error) {
       console.error('Error resolving addr', error)
       return { addr: '', ttl: TTL }
     }
   },
-  async contenthash(name) {
+  async contenthash() {
     const contenthash = EMPTY_CONTENT_HASH
     return { contenthash, ttl: TTL }
   },
-  async text(name, key, contract) {
+  async text(name, key, client) {
     try {
       let value = ''
 
       // only handle avatar for now
       if (key === 'avatar') {
-        value = await contract.getAvatarByName(name)
+        value = await readContract(client, {
+          ...l2Registry,
+          functionName: 'getAvatarByName',
+          args: [name],
+        })
       }
 
       return { value, ttl: TTL }

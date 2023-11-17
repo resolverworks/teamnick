@@ -2,9 +2,8 @@ import hre from 'hardhat'
 
 async function main() {
   const contractName = 'OffchainResolver'
-  // TODO: add gateway url
   const args = [
-    '', // _url (cloudflare worker)
+    'https://teamnick-gateway.gregskril.workers.dev/lookup/{sender}/{data}.json', // _url (cloudflare worker)
     [
       '0xd55f4c2634D9E384C4EaD770C7DbBAe02Ef45e88',
       '0x179A862703a4adfb29896552DF9e307980D19285',

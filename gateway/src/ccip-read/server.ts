@@ -4,6 +4,8 @@ import { abi as IResolverService_abi } from '@ensdomains/offchain-resolver-contr
 import { Buffer } from 'buffer'
 import { BytesLike, ethers } from 'ethers'
 import { Result, hexConcat } from 'ethers/lib/utils'
+import { Client, createPublicClient, http } from 'viem'
+import { baseGoerli } from 'viem/chains'
 
 import { Database, DatabaseResult } from './db'
 
@@ -26,7 +28,7 @@ const queryHandlers: {
     db: Database,
     name: string,
     args: Result,
-    contract: ethers.Contract
+    client: Client
   ) => Promise<DatabaseResult>
 } = {
   'addr(bytes32)': async (db, name, _args, contract) => {
@@ -59,6 +61,11 @@ async function query(
     throw new Error('Name must be normalised')
   }
 
+  // check if the name includes more than 2 "."s
+  if (name.split('.').length !== 3) {
+    throw new Error('Name must be a 3LD')
+  }
+
   if (ethers.utils.namehash(name) !== args[0]) {
     throw new Error('Name does not match namehash')
   }
@@ -68,18 +75,18 @@ async function query(
     throw new Error(`Unsupported query function ${signature}`)
   }
 
-  const provider = new ethers.providers.JsonRpcProvider()
-  const contract = new ethers.Contract(
-    // TODO: put L2 contract address here once deployed
-    '', // address
-    [
-      'function getEthAddressByName(string calldata name) public view returns (address)',
-      'function getAvatarByName(string calldata name) public view returns (string memory)',
-    ], // relevant ABI
-    provider // provider
-  )
+  const publicClient = createPublicClient({
+    chain: baseGoerli,
+    transport: http(),
+  })
 
-  const { result, ttl } = await handler(db, name, args.slice(1), contract)
+  const subname = name.split('.')[0]
+  const { result, ttl } = await handler(
+    db,
+    subname,
+    args.slice(1),
+    publicClient
+  )
 
   return {
     result: Resolver.encodeFunctionResult(signature, result),

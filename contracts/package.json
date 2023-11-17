@@ -5,10 +5,11 @@
     "dev": "hardhat node",
     "compile": "hardhat compile",
     "node": "hardhat node",
-    "deploy:local-registry": "hardhat run scripts/deploy-l2-registry.ts --network localhost",
-    "deploy:goerli-gateway": "hardhat run scripts/deploy-l1-resolver.ts --network mainnet",
     "deploy:l1-gateway": "hardhat run scripts/deploy-l1-resolver.ts --network mainnet",
-    "deploy:l2-registry": "hardhat run scripts/deploy-l2-registry.ts --network base"
+    "deploy:l1-goerli-gateway": "hardhat run scripts/deploy-l1-resolver.ts --network goerli",
+    "deploy:l2-registry": "hardhat run scripts/deploy-l2-registry.ts --network base",
+    "deploy:l2-local-registry": "hardhat run scripts/deploy-l2-registry.ts --network localhost",
+    "deploy:l2-goerli-registry": "hardhat run scripts/deploy-l2-registry.ts --network base_goerli"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-network-helpers": "^1.0.9",
