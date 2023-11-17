@@ -151,14 +151,27 @@ export function SubNameTable({ names }: { names: Name[] | undefined }) {
                 } border-b border-gray-200`}
               >
                 <td className="flex pl-3 py-4">
-                  {name.name}
-                  <div className="opacity-50">.teamnick.eth</div>
+                  <a
+                    href={`https://app.ens.domains/${name.name}.teamnick.eth`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className=" hover:text-blue-800 "
+                  >
+                    {name.name}
+                    <span className="opacity-50">.teamnick.eth</span>
+                  </a>
                 </td>
                 <td className="text-right pr-4 py-2 ">
-                  {formatAddress(name.ethAddress)}
+                  <FormattedAddressLink
+                    address={name.ethAddress}
+                    explorerUrl="https://basescan.org/address"
+                  />
                 </td>
                 <td className="text-right pr-4 py-2">
-                  {formatAddress(name.owner)}
+                  <FormattedAddressLink
+                    address={name.owner}
+                    explorerUrl="https://basescan.org/address"
+                  />
                 </td>
               </tr>
             ))}
@@ -169,11 +182,24 @@ export function SubNameTable({ names }: { names: Name[] | undefined }) {
   );
 }
 
-function formatAddress(address) {
+const FormattedAddressLink = ({ address, explorerUrl }) => {
   if (!address || address.length < 10) {
-    return address; // Or handle the error as per your application's needs
+    return <span>{address}</span>;
   }
-  return `${address.substring(0, 6)}...${address.substring(
+
+  const formattedAddress = `${address.substring(0, 6)}...${address.substring(
     address.length - 4
   )}`;
-}
+  const fullUrl = `${explorerUrl}/${address}`;
+
+  return (
+    <a
+      href={fullUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-400 hover:text-blue-800 underline"
+    >
+      {formattedAddress}
+    </a>
+  );
+};
