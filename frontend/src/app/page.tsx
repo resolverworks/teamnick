@@ -18,10 +18,36 @@ import { usePonder, Name } from "@/hooks/usePonder";
 
 export default function Home() {
   const [name, setName] = useState("");
-  const setNameDebounced = useCallback(
-    debounce((value: string) => setName(value), 500),
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const validateInput = (input) => {
+    if (input.length < 2 || input.length > 10) {
+      return "Name must be between 2 and 10 characters.";
+    }
+    if (!/^[\x00-\x7F]+$/.test(input)) {
+      return "Name must contain only ASCII characters.";
+    }
+    return "";
+  };
+
+  const validateInputDebounced = useCallback(
+    debounce((value) => {
+      setErrorMessage(validateInput(value));
+    }, 300),
     []
   );
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setName(value);
+    validateInputDebounced(value);
+  };
+
+  useEffect(() => {
+    return () => {
+      validateInputDebounced.cancel();
+    };
+  }, [validateInputDebounced]);
   const { address } = useAccount();
 
   // Prepare contract write configuration
@@ -60,15 +86,6 @@ export default function Home() {
 
   const ponder = usePonder();
 
-  const handleInputChange = (e: any) => {
-    setNameDebounced(e.target.value);
-  };
-  useEffect(() => {
-    return () => {
-      setNameDebounced.cancel();
-    };
-  }, [setNameDebounced]);
-
   const totalSupply =
     data && data[1] ? Number(data[1].result).toString() : "Unavailable";
   console.log({ data });
@@ -97,15 +114,22 @@ export default function Home() {
         <Input
           className="input-width"
           label="Choose a name"
-          placeholder="thegoodone"
+          placeholder="thebest"
           suffix=".teamnick.eth"
           value={name}
           onChange={handleInputChange}
         />
+        <div
+          className={`text-red-300 text-center ${
+            errorMessage ? "visible" : "invisible"
+          }`}
+        >
+          {errorMessage || "Placeholder"}
+        </div>
       </div>
       <div className="pb-4  mx-auto">
         <Button
-          disabled={!address || !name}
+          disabled={!address || !name || errorMessage}
           onClick={handleMintClick}
           width="45"
         >
