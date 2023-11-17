@@ -7,6 +7,9 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TeamNick is ERC721, ERC721Enumerable, ERC721Pausable, Ownable {
+    event Registered(uint256 indexed node, string name, address indexed owner, address indexed ethAddress, string avatar);
+    event RecordsUpdated(uint256 indexed node, address indexed ethAddress, string avatar);
+
     error InvalidName();
     error Unauthorized();
 
@@ -54,19 +57,27 @@ contract TeamNick is ERC721, ERC721Enumerable, ERC721Pausable, Ownable {
         _safeMint(owner, node); // This will fail if the node is already registered
         records[node].ethAddress = ethAddress;
         records[node].avatar = avatar;
+
+        emit Registered(node, name, owner, ethAddress, avatar);
     }
 
     function updateEthAddress(uint256 node, address ethAddress) public authorised(node) {
         records[node].ethAddress = ethAddress;
+
+        emit RecordsUpdated(node, ethAddress, records[node].avatar);
     }
 
     function updateAvatar(uint256 node, string calldata avatar) public authorised(node) {
         records[node].avatar = avatar;
+
+        emit RecordsUpdated(node, records[node].ethAddress, avatar);
     }
 
     function updateRecords(uint256 node, address ethAddress, string calldata avatar) public authorised(node) {
         this.updateEthAddress(node, ethAddress);
         this.updateAvatar(node, avatar);
+
+        emit RecordsUpdated(node, ethAddress, avatar);
     }
 
     function getEthAddress(uint256 node) public view returns (address) {
