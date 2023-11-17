@@ -58,20 +58,20 @@ export default function Home() {
 
   // const [tokenIds, setTokenIds] = useState([]);
 
-  useEffect(() => {
-    fetchTokens().then((fetchedToken) => {
-      // Check if fetchedToken is defined
-      if (typeof fetchedToken !== "undefined") {
-        // Convert the fetchedToken to a string
-        const tokenString = fetchedToken.toString();
-        setToken(tokenString);
-      } else {
-        // Handle the case where fetchedToken is undefined
-        // You can set a default value or take appropriate action
-        console.log(fetchedToken, "error");
-      }
-    });
-  }, []);
+  // useEffect(() => {
+  //   fetchTokens().then((fetchedToken) => {
+  //     // Check if fetchedToken is defined
+  //     if (typeof fetchedToken !== "undefined") {
+  //       // Convert the fetchedToken to a string
+  //       const tokenString = fetchedToken.toString();
+  //       setToken(tokenString);
+  //     } else {
+  //       // Handle the case where fetchedToken is undefined
+  //       // You can set a default value or take appropriate action
+  //       console.log(fetchedToken, "error");
+  //     }
+  //   });
+  // }, []);
 
   const handleInputChange = (e) => {
     setName(e.target.value);
@@ -85,7 +85,7 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col  max-w-3xl w-full mx-auto">
       <div className="flex py-10  justify-end">
-        <ConnectButton chainStatus="icon" showBalance={false} />
+        <ConnectButton chainStatus="none" showBalance={false} />
       </div>
       <div className="flex flex-col pb-12 pt-2">
         <Typography
@@ -107,7 +107,7 @@ export default function Home() {
         <Input
           className="input-width"
           label="Choose a name"
-          placeholder="go"
+          placeholder="thegoodone"
           suffix=".teamnick.eth"
           value={name}
           onChange={handleInputChange}
@@ -132,10 +132,12 @@ export default function Home() {
             return <p>processing...</p>;
           }
 
-          return <p>do something dude</p>;
+          return <p>Names don't mint themselves. Clickety click.</p>;
         })()}
       </div>
-      {/* <SubNameTable /> */}
+      <div className="py-10">
+        <SubNameTable />
+      </div>
     </main>
   );
 }
@@ -152,44 +154,48 @@ export function SubNameTable(props) {
 
   return (
     <>
-      <div className="max-w-5xl grow my-0 mx-auto bg-white rounded-none rounded-r-lg rounded-b-lg rounded-l-lg p-5 relative min-w-[480px] ">
-        <table className="w-full min-w-[480px] pb-4">
-          <caption className="text-lg">Subnames</caption>
+      <div className="max-w-xl grow my-0 mx-auto bg-white rounded-none rounded-r-lg rounded-b-lg rounded-l-lg p-5 relative min-w-[480px] ">
+        <table className="w-full min-w-[360px]  ">
+          <caption className="text-lg pb-4">Subnames Minted So Far</caption>
           <thead>
             <tr>
               <th className="text-center px-2">Name</th>
-              <th className="text-left pl-2">Eth Address</th>
+              <th className="text-center pl-2">Eth Address</th>
             </tr>
           </thead>
-          <tbody>{/* ... your map function and emptyRows */}</tbody>
+          <tbody>
+            <tr>
+              <td className="pl-11">a</td>
+              <td className="text-right pr-4">0x</td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </>
   );
 }
 
-async function fetchTokens() {
-  const client = createPublicClient({
-    chain: localhost,
-    transport: http(),
-  });
+// async function fetchTokens() {
+//   const client = createPublicClient({
+//     chain: localhost,
+//     transport: http(),
+//   });
 
-  const token = await client.readContract({
-    ...l2Registry,
-    functionName: "tokenByIndex",
-    args: [1],
-  });
-  return token;
+//   // Define the indices of the tokens you want to fetch
+//   const tokenIndices = [1, 2, 3, 4];
 
-  //tokenOfOwnerByIndex
+//   // Use Promise.all to fetch all tokens concurrently
+//   const tokens = await Promise.all(
+//     tokenIndices.map((index) =>
+//       client.readContract({
+//         ...l2Registry,
+//         functionName: "tokenByIndex",
+//         args: [index],
+//       })
+//     )
+//   );
 
-  // try {
-  //   const blockNumber = await client.getBlockNumber();
-  //   console.log(blockNumber, "hi");
-  //   return blockNumber;
-  // } catch (error) {
-  //   console.error("There was a problem with the fetch operation:", error);
-  //   // Handle the error appropriately
-  //   return null;
-  // }
-}
+//   // Log and return the tokens
+//   console.log(tokens);
+//   return tokens;
+// }
