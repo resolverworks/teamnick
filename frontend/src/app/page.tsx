@@ -1,9 +1,9 @@
-'use client'
-import React, { useState, useEffect } from 'react'
-import { encodePacked, keccak256 } from 'viem'
-import { useDebounce } from 'usehooks-ts'
+"use client";
+import React, { useState, useEffect } from "react";
+import { encodePacked, keccak256 } from "viem";
+import { useDebounce } from "usehooks-ts";
 
-import { l2Registry } from '@/lib/l2-registry'
+import { l2Registry } from "@/lib/l2-registry";
 import {
   Button,
   Input,
@@ -13,69 +13,69 @@ import {
   Select,
   Card,
   RecordItem,
-} from '@ensdomains/thorin'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
+} from "@ensdomains/thorin";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
 import {
   useAccount,
   useContractRead,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
-} from 'wagmi'
+} from "wagmi";
 
-import { usePonder } from '@/hooks/usePonder'
-import { Name } from '@/lib/ponder'
+import { usePonder } from "@/hooks/usePonder";
+import { Name } from "@/lib/ponder";
 
 const validateInput = (input: string) => {
   if (input.length < 2 || input.length > 10) {
-    return 'Name must be between 2 and 10 characters.'
+    return "Name must be between 2 and 10 characters.";
   }
 
   if (!/^[\x00-\x7F]+$/.test(input)) {
-    return 'Name must contain only ASCII characters.'
+    return "Name must contain only ASCII characters.";
   }
 
-  return ''
-}
+  return "";
+};
 
 export default function Home() {
-  const { address } = useAccount()
-  const [name, setName] = useState('')
-  const debouncedName = useDebounce(name, 500)
-  const [recentName, setRecentName] = useState('')
-  const errorMessage = debouncedName ? validateInput(debouncedName) : ''
+  const { address } = useAccount();
+  const [name, setName] = useState("");
+  const debouncedName = useDebounce(name, 500);
+  const [recentName, setRecentName] = useState("");
+  const errorMessage = debouncedName ? validateInput(debouncedName) : "";
 
   const prepare = usePrepareContractWrite({
     ...l2Registry,
-    functionName: 'register',
-    enabled: validateInput(debouncedName) === '',
+    functionName: "register",
+    enabled: validateInput(debouncedName) === "",
     args: address
       ? [
           debouncedName,
           address,
           address,
-          'https://cdn.pixabay.com/photo/2012/05/04/10/17/sun-47083_1280.png',
+          "https://cdn.pixabay.com/photo/2012/05/04/10/17/sun-47083_1280.png",
         ]
       : undefined,
-  })
+  });
 
-  const tx = useContractWrite(prepare.config)
-  const receipt = useWaitForTransaction(tx.data) // Define receipt here
+  const tx = useContractWrite(prepare.config);
+  const receipt = useWaitForTransaction(tx.data); // Define receipt here
 
   useEffect(() => {
     if (receipt.isSuccess || receipt.isError) {
-      setName('') // Clear the input field when transaction is completed
+      setName(""); // Clear the input field when transaction is completed
     }
-  }, [receipt])
+  }, [receipt]);
 
   const { data, isError, isLoading } = useContractRead({
     ...l2Registry,
-    functionName: 'totalSupply',
-  })
+    functionName: "totalSupply",
+  });
 
-  const ponder = usePonder()
+  const ponder = usePonder();
 
-  const totalSupply = data ? Number(data).toString() : 'Unavailable'
+  const totalSupply = data ? Number(data).toString() : "Unavailable";
 
   return (
     <main className="flex min-h-screen flex-col  max-w-3xl w-full mx-auto">
@@ -105,10 +105,10 @@ export default function Home() {
         />
         <div
           className={`text-red-300 text-center ${
-            errorMessage ? 'visible' : 'invisible'
+            errorMessage ? "visible" : "invisible"
           }`}
         >
-          {errorMessage || 'Placeholder'}
+          {errorMessage || "Placeholder"}
         </div>
       </div>
       <div className="pb-4  mx-auto">
@@ -121,8 +121,8 @@ export default function Home() {
             !!prepare.isError
           }
           onClick={() => {
-            setRecentName(name)
-            tx.write?.()
+            setRecentName(name);
+            tx.write?.();
           }}
           width="45"
         >
@@ -134,7 +134,7 @@ export default function Home() {
           if (receipt.isSuccess) {
             return (
               <p>
-                {'success! '}
+                {"success! "}
                 <a
                   href={`https://app.ens.domains/${recentName}.teamnick.eth`}
                   target="_blank"
@@ -146,31 +146,31 @@ export default function Home() {
                 </a>
                 is live!
               </p>
-            )
+            );
           }
 
           if (receipt.isError) {
-            return <p>failed!</p>
+            return <p>failed!</p>;
           }
 
           if (receipt.isLoading) {
-            return <p>processing...</p>
+            return <p>processing...</p>;
           }
 
-          return <p>Names don't mint themselves. Clickety click.</p>
+          return <p>Names don't mint themselves. Clickety click.</p>;
         })()}
       </div>
       <div className="py-10">
         <SubNameTable names={ponder.data?.data.names} />
       </div>
-      <div className="max-w-xl  mx-auto">
+      {/* <div className="max-w-xl  mx-auto">
         <UpdateRecords names={ponder.data?.data.names} />
-      </div>
+      </div> */}
     </main>
-  )
+  );
 }
 
-export function SubNameTable({ names }: { names: Name[] | undefined }) {
+function SubNameTable({ names }: { names: Name[] | undefined }) {
   return (
     <>
       <div className="max-w-xl grow my-0 mx-auto bg-white rounded-lg p-5 relative min-w-[480px]">
@@ -192,7 +192,7 @@ export function SubNameTable({ names }: { names: Name[] | undefined }) {
               <tr
                 key={name.id}
                 className={`${
-                  index % 2 === 0 ? 'bg-gray-50' : ''
+                  index % 2 === 0 ? "bg-gray-50" : ""
                 } border-b border-gray-200`}
               >
                 <td className="flex pl-3 py-4">
@@ -224,18 +224,24 @@ export function SubNameTable({ names }: { names: Name[] | undefined }) {
         </table>
       </div>
     </>
-  )
+  );
 }
 
-const FormattedAddressLink = ({ address, explorerUrl }) => {
+const FormattedAddressLink = ({
+  address,
+  explorerUrl,
+}: {
+  address: string;
+  explorerUrl: string;
+}) => {
   if (!address || address.length < 10) {
-    return <span>{address}</span>
+    return <span>{address}</span>;
   }
 
   const formattedAddress = `${address.substring(0, 6)}...${address.substring(
     address.length - 4
-  )}`
-  const fullUrl = `${explorerUrl}/${address}`
+  )}`;
+  const fullUrl = `${explorerUrl}/${address}`;
 
   return (
     <a
@@ -246,159 +252,160 @@ const FormattedAddressLink = ({ address, explorerUrl }) => {
     >
       {formattedAddress}
     </a>
-  )
-}
+  );
+};
 
 function hashLabel(label: string) {
-  return BigInt(keccak256(encodePacked(['string'], [label])))
+  return BigInt(keccak256(encodePacked(["string"], [label])));
 }
 
-export function UpdateRecords(names) {
-  const { address } = useAccount()
-  const [selectOptions, setSelectOptions] = useState([])
-  const [fullDataMapping, setFullDataMapping] = useState({})
-  const [selectedOption, setSelectedOption] = useState(null)
-  const [isValid, setIsValid] = useState(false)
-  const [ownerAddress, setOwnerAddress] = useState('')
-  const [ethAddress, setEthAddress] = useState('')
-  const [selectedName, setSelectedName] = useState('')
+// export function UpdateRecords({ names }: { names: Name[] | undefined }) {
+//   const { address } = useAccount();
+//   const [selectOptions, setSelectOptions] = useState([]);
+//   const [fullDataMapping, setFullDataMapping] = useState({});
+//   const [selectedOption, setSelectedOption] = useState(null);
+//   const [isValid, setIsValid] = useState(false);
+//   const [ownerAddress, setOwnerAddress] = useState("");
+//   const [ethAddress, setEthAddress] = useState("");
+//   const [selectedName, setSelectedName] = useState("");
 
-  // const [avatar,setAvatar] = useState("");
-  const [node, setNode] = useState('')
-  const isValidEthAddress = (address) => {
-    return /^0x[a-fA-F0-9]{40}$/.test(address)
-  }
+//   // const [avatar,setAvatar] = useState("");
+//   const [node, setNode] = useState("");
+//   const isValidEthAddress = (address: string) => {
+//     return /^0x[a-fA-F0-9]{40}$/.test(address);
+//   };
 
-  // const { data, isError, isLoading } = useContractReads({
-  //   contracts: [
-  //     {
-  //       ...l2Registry,
-  //       functionName: "getEthAddressByName",
-  //       args: [name],
-  //     },
-  //     {
-  //       ...l2Registry,
-  //       functionName: "totalSupply",
-  //     },
-  //   ],
-  // });
+//   // const { data, isError, isLoading } = useContractReads({
+//   //   contracts: [
+//   //     {
+//   //       ...l2Registry,
+//   //       functionName: "getEthAddressByName",
+//   //       args: [name],
+//   //     },
+//   //     {
+//   //       ...l2Registry,
+//   //       functionName: "totalSupply",
+//   //     },
+//   //   ],
+//   // });
 
-  useEffect(() => {
-    if (Array.isArray(names.names)) {
-      const newOptions = []
-      const newMapping = {}
+//   useEffect(() => {
+//     if (Array.isArray(names.names)) {
+//       const newOptions = [];
+//       const newMapping = {};
 
-      names.names
-        .filter((item) => item.owner === address)
-        .forEach((item, index) => {
-          const value = String(index) // Unique identifier for the option
-          newOptions.push({
-            value: value,
-            label: item.name + '.teamnick.eth',
-          })
-          newMapping[value] = item // Store the full item data in the mapping
-        })
+//       names.names
+//         .filter((item) => item.owner === address)
+//         .forEach((item, index) => {
+//           const value = String(index); // Unique identifier for the option
+//           newOptions.push({
+//             value: value,
+//             label: item.name + ".teamnick.eth",
+//           });
+//           newMapping[value] = item; // Store the full item data in the mapping
+//         });
 
-      setSelectOptions(newOptions)
-      setFullDataMapping(newMapping) // Set the full data mapping
-    }
-  }, [names, address])
+//       setSelectOptions(newOptions);
+//       setFullDataMapping(newMapping); // Set the full data mapping
+//     }
+//   }, [names, address]);
 
-  const handleSelection = (event) => {
-    const selectedValue = event.target.value
-    const fullData = fullDataMapping[selectedValue]
-    setSelectedOption(fullData) // Set the selected option's full data
-  }
+//   const handleSelection = (event) => {
+//     const selectedValue = event.target.value;
+//     const fullData = fullDataMapping[selectedValue];
+//     setSelectedOption(fullData); // Set the selected option's full data
+//   };
 
-  useEffect(() => {
-    const isOwnerValid = ownerAddress === '' || isValidEthAddress(ownerAddress)
-    const isEthAddressValid = ethAddress === '' || isValidEthAddress(ethAddress)
-    setIsValid(isOwnerValid && isEthAddressValid)
-  }, [ownerAddress, ethAddress])
+//   useEffect(() => {
+//     const isOwnerValid = ownerAddress === "" || isValidEthAddress(ownerAddress);
+//     const isEthAddressValid =
+//       ethAddress === "" || isValidEthAddress(ethAddress);
+//     setIsValid(isOwnerValid && isEthAddressValid);
+//   }, [ownerAddress, ethAddress]);
 
-  // const prepareConfig = useMemo(
-  //   () => ({
-  //     ...l2Registry,
-  //     functionName: "updateRecords",
-  //     args: address
-  //       ? [
-  //           node,
-  //           ownerAddress,
-  //           avatar,
-  //         ]
-  //       : undefined,
-  //   }),
-  //   [name, address]
-  // );
+//   // const prepareConfig = useMemo(
+//   //   () => ({
+//   //     ...l2Registry,
+//   //     functionName: "updateRecords",
+//   //     args: address
+//   //       ? [
+//   //           node,
+//   //           ownerAddress,
+//   //           avatar,
+//   //         ]
+//   //       : undefined,
+//   //   }),
+//   //   [name, address]
+//   // );
 
-  // const prepare = usePrepareContractWrite(prepareConfig);
-  // const tx = useContractWrite(prepare.config);
-  // const receipt = useWaitForTransaction(tx.data);
+//   // const prepare = usePrepareContractWrite(prepareConfig);
+//   // const tx = useContractWrite(prepare.config);
+//   // const receipt = useWaitForTransaction(tx.data);
 
-  useEffect(() => {
-    if (selectedOption) {
-      setSelectedName(selectedOption.name)
-      console.log(hashLabel(selectedName))
-    }
-  }, [selectedOption])
+//   useEffect(() => {
+//     if (selectedOption) {
+//       setSelectedName(selectedOption.name);
+//       console.log(hashLabel(selectedName));
+//     }
+//   }, [selectedOption]);
 
-  return (
-    <div className=" min-w-[480px]">
-      <Card>
-        <Select
-          autocomplete
-          options={selectOptions}
-          placeholder="Select an option..."
-          tabIndex="2"
-          onChange={handleSelection}
-        />
-        {selectedOption && (
-          <>
-            <RecordItem keyLabel="Owner" value={selectedOption.owner}>
-              {selectedOption.owner}
-            </RecordItem>
-            <RecordItem
-              keyLabel="Eth Address"
-              value={selectedOption.ethAddress}
-            >
-              {selectedOption.ethAddress}
-            </RecordItem>
-            <RecordItem keyLabel="Avatar" value={selectedOption.avatar}>
-              {selectedOption.avatar}
-            </RecordItem>
-          </>
-        )}
-      </Card>
-      {selectedOption && selectedOption.avatar && (
-        <div className=" max-w-[32px] ml-[44px] -mt-[60px] mb-[60px]">
-          <Avatar label="" src={selectedOption.avatar || ''} />
-        </div>
-      )}
+//   return (
+//     <div className=" min-w-[480px]">
+//       <Card>
+//         <Select
+//           autocomplete
+//           options={selectOptions}
+//           placeholder="Select an option..."
+//           tabIndex="2"
+//           onChange={handleSelection}
+//         />
+//         {selectedOption && (
+//           <>
+//             <RecordItem keyLabel="Owner" value={selectedOption.owner}>
+//               {selectedOption.owner}
+//             </RecordItem>
+//             <RecordItem
+//               keyLabel="Eth Address"
+//               value={selectedOption.ethAddress}
+//             >
+//               {selectedOption.ethAddress}
+//             </RecordItem>
+//             <RecordItem keyLabel="Avatar" value={selectedOption.avatar}>
+//               {selectedOption.avatar}
+//             </RecordItem>
+//           </>
+//         )}
+//       </Card>
+//       {selectedOption && selectedOption.avatar && (
+//         <div className=" max-w-[32px] ml-[44px] -mt-[60px] mb-[60px]">
+//           <Avatar label="" src={selectedOption.avatar || ""} />
+//         </div>
+//       )}
 
-      <FieldSet legend="Update Records">
-        <Input
-          label="Owner"
-          placeholder="0x5423..."
-          value={ownerAddress}
-          onChange={(e) => setOwnerAddress(e.target.value)}
-        />
-        <Input
-          label="Eth Address"
-          placeholder="0x5423.."
-          value={ethAddress}
-          onChange={(e) => setEthAddress(e.target.value)}
-        />
-        <Input label="Avatar" placeholder="https://" />
-        <div className="pb-4  mx-auto">
-          <Button
-            // onClick=
-            width="45"
-            disabled={!isValid} // Disable button based on validity
-          >
-            Update Records
-          </Button>
-        </div>
-      </FieldSet>
-    </div>
-  )
-}
+//       <FieldSet legend="Update Records">
+//         <Input
+//           label="Owner"
+//           placeholder="0x5423..."
+//           value={ownerAddress}
+//           onChange={(e) => setOwnerAddress(e.target.value)}
+//         />
+//         <Input
+//           label="Eth Address"
+//           placeholder="0x5423.."
+//           value={ethAddress}
+//           onChange={(e) => setEthAddress(e.target.value)}
+//         />
+//         <Input label="Avatar" placeholder="https://" />
+//         <div className="pb-4  mx-auto">
+//           <Button
+//             // onClick=
+//             width="45"
+//             disabled={!isValid} // Disable button based on validity
+//           >
+//             Update Records
+//           </Button>
+//         </div>
+//       </FieldSet>
+//     </div>
+//   );
+// }
