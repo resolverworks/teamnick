@@ -1,20 +1,5 @@
+import { Name, PonderResponse } from '@/lib/ponder'
 import { useFetch } from 'usehooks-ts'
-
-export type PonderResponse<T> = {
-  data: T
-  errors: {
-    message: string
-    locations: any[]
-  }[]
-}
-
-export type Name = {
-  id: string
-  name: string
-  owner: string
-  avatar: string
-  ethAddress: string
-}
 
 export function usePonder() {
   const graphQlQuery = `

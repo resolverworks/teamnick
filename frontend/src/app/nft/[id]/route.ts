@@ -1,10 +1,13 @@
-import { Name, PonderResponse } from '@/hooks/usePonder'
+import { getNameByTokenId } from '@/lib/ponder'
 import { NextRequest, NextResponse } from 'next/server'
 import z from 'zod'
 
 const schema = z.object({
   id: z.string().regex(/^[0-9]+$/),
 })
+
+const VERCEL_URL = process.env.VERCEL_URL
+const baseUrl = VERCEL_URL ? `https://${VERCEL_URL}` : 'http://localhost:3000'
 
 export async function GET(
   request: NextRequest,
@@ -18,28 +21,7 @@ export async function GET(
 
   const { id } = safeParse.data
 
-  const res = await fetch('https://teamnick.up.railway.app/', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      query: `
-        {
-          name (id: "${id}") {
-            id
-            name
-            owner
-            avatar
-            ethAddress
-          }
-        }
-      `,
-    }),
-  })
-
-  const { data } = (await res.json()) as PonderResponse<{ name: Name }>
-  const { name } = data
+  const name = await getNameByTokenId(id)
 
   if (!name) {
     return NextResponse.json({ error: 'Invalid token id' }, { status: 404 })
@@ -48,6 +30,6 @@ export async function GET(
   return NextResponse.json({
     name: name.name + '.teamnick.eth',
     description: 'Subname of teamnick.eth',
-    image: '',
+    image: `${baseUrl}/nft/${id}/image`,
   })
 }

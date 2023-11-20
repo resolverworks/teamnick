@@ -13,19 +13,18 @@ import {
   Select,
   Card,
   RecordItem,
-  Spinner,
 } from '@ensdomains/thorin'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 import {
   useAccount,
   useContractRead,
-  useContractReads,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
 } from 'wagmi'
 
-import { usePonder, Name } from '@/hooks/usePonder'
+import { usePonder } from '@/hooks/usePonder'
+import { Name } from '@/lib/ponder'
 
 const validateInput = (input: string) => {
   if (input.length < 2 || input.length > 10) {
