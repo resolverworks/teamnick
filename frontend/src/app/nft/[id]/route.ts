@@ -6,8 +6,10 @@ const schema = z.object({
   id: z.string().regex(/^[0-9]+$/),
 })
 
-const VERCEL_URL = process.env.VERCEL_URL
-const baseUrl = VERCEL_URL ? `https://${VERCEL_URL}` : 'http://localhost:3000'
+const PROD_URL = 'teamnick.xyz'
+const baseUrl = process.env.VERCEL_URL
+  ? `https://${PROD_URL}`
+  : 'http://localhost:3000'
 
 export async function GET(
   request: NextRequest,
