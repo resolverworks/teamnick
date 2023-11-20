@@ -15,6 +15,7 @@ import {
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import {
   useAccount,
+  useContractRead,
   useContractReads,
   useContractWrite,
   usePrepareContractWrite,
@@ -289,9 +290,34 @@ export function UpdateRecords(names) {
   const [isValid, setIsValid] = useState(false);
   const [ownerAddress, setOwnerAddress] = useState("");
   const [ethAddress, setEthAddress] = useState("");
+  const [selectedName, setSelectedName] = useState("");
+
+  const { data, isError, isLoading } = useContractRead({
+    ...l2Registry,
+    functionName: "hashName",
+    args: [selectedName],
+    enabled: false, // Disable automatic execution
+  });
+
+  // const [avatar,setAvatar] = useState("");
+  const [node, setNode] = useState("");
   const isValidEthAddress = (address) => {
     return /^0x[a-fA-F0-9]{40}$/.test(address);
   };
+
+  // const { data, isError, isLoading } = useContractReads({
+  //   contracts: [
+  //     {
+  //       ...l2Registry,
+  //       functionName: "getEthAddressByName",
+  //       args: [name],
+  //     },
+  //     {
+  //       ...l2Registry,
+  //       functionName: "totalSupply",
+  //     },
+  //   ],
+  // });
 
   useEffect(() => {
     if (Array.isArray(names.names)) {
@@ -327,6 +353,32 @@ export function UpdateRecords(names) {
     setIsValid(isOwnerValid && isEthAddressValid);
   }, [ownerAddress, ethAddress]);
 
+  // const prepareConfig = useMemo(
+  //   () => ({
+  //     ...l2Registry,
+  //     functionName: "updateRecords",
+  //     args: address
+  //       ? [
+  //           node,
+  //           ownerAddress,
+  //           avatar,
+  //         ]
+  //       : undefined,
+  //   }),
+  //   [name, address]
+  // );
+
+  // const prepare = usePrepareContractWrite(prepareConfig);
+  // const tx = useContractWrite(prepare.config);
+  // const receipt = useWaitForTransaction(tx.data);
+
+  useEffect(() => {
+    if (selectedOption) {
+      setSelectedName(selectedOption.name);
+      console.log(data);
+    }
+  }, [selectedOption]);
+  console.log(data);
   return (
     <div className=" min-w-[480px]">
       <Card>
