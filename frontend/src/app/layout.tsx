@@ -1,19 +1,19 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next'
 
-import "@rainbow-me/rainbowkit/styles.css";
+import '@rainbow-me/rainbowkit/styles.css'
 
-import "./globals.css";
-import { ClientProviders } from "@/lib/providers";
+import './globals.css'
+import { ClientProviders } from '@/lib/providers'
 
 export const metadata: Metadata = {
-  title: "Team Nick",
-  description: "A name a day, keeps the bad vibes away",
-};
+  title: 'Team Nick',
+  description: 'A name a day, keeps the bad vibes away',
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <html>
@@ -21,5 +21,5 @@ export default function RootLayout({
         <ClientProviders>{children}</ClientProviders>
       </body>
     </html>
-  );
+  )
 }

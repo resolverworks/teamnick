@@ -6,16 +6,20 @@ export type PonderResponse<T> = {
   }[]
 }
 
-export type Name = {
+export type Profile = {
   id: string
   name: string
+  label: string
   owner: string
   avatar: string
-  ethAddress: string
+  address: string
+  registeredAt: string
 }
 
+export const ponderUrl = 'https://teamnick.up.railway.app/'
+
 export async function getNameByTokenId(id: string) {
-  const res = await fetch('https://teamnick.up.railway.app/', {
+  const res = await fetch(ponderUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -23,20 +27,22 @@ export async function getNameByTokenId(id: string) {
     body: JSON.stringify({
       query: `
         {
-          name (id: "${id}") {
+          profile (id: "${id}") {
             id
             name
+            label
             owner
             avatar
-            ethAddress
+            address
+            registeredAt
           }
         }
       `,
     }),
   })
 
-  const { data } = (await res.json()) as PonderResponse<{ name: Name }>
-  const { name } = data
+  const { data } = (await res.json()) as PonderResponse<{ profile: Profile }>
+  const { profile } = data
 
-  return name
+  return profile
 }

@@ -1,4 +1,4 @@
-import { Name, PonderResponse, getNameByTokenId } from '@/lib/ponder'
+import { Profile, getNameByTokenId } from '@/lib/ponder'
 import { ImageResponse } from '@vercel/og'
 import { NextRequest, NextResponse } from 'next/server'
 import z from 'zod'
@@ -35,7 +35,7 @@ const fontBold = fetch(
   new URL('../../../../assets/Satoshi-Bold.otf', import.meta.url)
 ).then((res) => res.arrayBuffer())
 
-async function generateImage(profile: Name): Promise<ImageResponse> {
+async function generateImage(profile: Profile): Promise<ImageResponse> {
   const fontBoldData = await fontBold
 
   return new ImageResponse(
@@ -73,7 +73,7 @@ async function generateImage(profile: Name): Promise<ImageResponse> {
             textShadow: '2px 2px 12px rgba(0, 0, 0, 0.1)',
           }}
         >
-          <span style={{}}>{profile.name}.</span>
+          <span>{profile.label}.</span>
 
           <span
             style={{

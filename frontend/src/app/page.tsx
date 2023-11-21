@@ -1,81 +1,95 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import { encodePacked, keccak256 } from "viem";
-import { useDebounce } from "usehooks-ts";
+'use client'
 
-import { l2Registry } from "@/lib/l2-registry";
-import {
-  Button,
-  Input,
-  Typography,
-  FieldSet,
-  Avatar,
-  Select,
-  Card,
-  RecordItem,
-} from "@ensdomains/thorin";
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ConnectButton } from '@rainbow-me/rainbowkit'
+import { encodePacked, keccak256 } from 'viem'
 import {
   useAccount,
+  useBlockNumber,
   useContractRead,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
-} from "wagmi";
+} from 'wagmi'
+import { useDebounce } from 'usehooks-ts'
+import {
+  Avatar,
+  Button,
+  Input,
+  Typography,
+  FieldSet,
+  Select,
+  Card,
+  RecordItem,
+} from '@ensdomains/thorin'
+import React, { useState, useEffect } from 'react'
 
-import { usePonder } from "@/hooks/usePonder";
-import { Name } from "@/lib/ponder";
+import { l2Registry } from '@/lib/l2-registry'
+import { Profile } from '@/lib/ponder'
+import { usePonder } from '@/hooks/usePonder'
 
 const validateInput = (input: string) => {
   if (input.length < 2 || input.length > 10) {
-    return "Name must be between 2 and 10 characters.";
+    return 'Name must be between 2 and 10 characters.'
   }
 
   if (!/^[\x00-\x7F]+$/.test(input)) {
-    return "Name must contain only ASCII characters.";
+    return 'Name must contain only ASCII characters.'
   }
 
-  return "";
-};
+  return ''
+}
 
 export default function Home() {
-  const { address } = useAccount();
-  const [name, setName] = useState("");
-  const debouncedName = useDebounce(name, 500);
-  const [recentName, setRecentName] = useState("");
-  const errorMessage = debouncedName ? validateInput(debouncedName) : "";
+  const { address } = useAccount()
+  const [name, setName] = useState('')
+  const debouncedName = useDebounce(name, 500)
+  const [recentName, setRecentName] = useState('')
+  const errorMessage = debouncedName ? validateInput(debouncedName) : ''
+  const [ponderCacheKey, setPonderCacheKey] = useState<string | undefined>()
 
   const prepare = usePrepareContractWrite({
     ...l2Registry,
-    functionName: "register",
-    enabled: validateInput(debouncedName) === "",
+    functionName: 'register',
+    enabled: validateInput(debouncedName) === '',
     args: address
       ? [
           debouncedName,
           address,
           address,
-          "https://cdn.pixabay.com/photo/2012/05/04/10/17/sun-47083_1280.png",
+          'https://cdn.pixabay.com/photo/2012/05/04/10/17/sun-47083_1280.png',
         ]
       : undefined,
-  });
+  })
 
-  const tx = useContractWrite(prepare.config);
-  const receipt = useWaitForTransaction(tx.data); // Define receipt here
+  const tx = useContractWrite(prepare.config)
+  const receipt = useWaitForTransaction(tx.data) // Define receipt here
 
   useEffect(() => {
     if (receipt.isSuccess || receipt.isError) {
-      setName(""); // Clear the input field when transaction is completed
+      setName('') // Clear the input field when transaction is completed
     }
-  }, [receipt]);
+  }, [receipt])
 
-  const { data, isError, isLoading } = useContractRead({
+  const { data: supply, refetch: refetchSupply } = useContractRead({
     ...l2Registry,
-    functionName: "totalSupply",
-  });
+    functionName: 'totalSupply',
+  })
 
-  const ponder = usePonder();
+  const totalSupply = supply ? Number(supply).toString() : 'Unavailable'
 
-  const totalSupply = data ? Number(data).toString() : "Unavailable";
+  const ponder = usePonder({
+    key: ponderCacheKey,
+  })
+
+  useEffect(() => {
+    if (receipt.isSuccess) {
+      // wait 1 second for ponder to index the transaction
+      setTimeout(() => {
+        refetchSupply()
+        setPonderCacheKey(receipt?.data?.transactionHash)
+      }, 1000)
+    }
+  }, [receipt.isSuccess])
 
   return (
     <main className="flex min-h-screen flex-col  max-w-3xl w-full mx-auto">
@@ -105,10 +119,10 @@ export default function Home() {
         />
         <div
           className={`text-red-300 text-center ${
-            errorMessage ? "visible" : "invisible"
+            errorMessage ? 'visible' : 'invisible'
           }`}
         >
-          {errorMessage || "Placeholder"}
+          {errorMessage || 'Placeholder'}
         </div>
       </div>
       <div className="pb-4  mx-auto">
@@ -121,8 +135,8 @@ export default function Home() {
             !!prepare.isError
           }
           onClick={() => {
-            setRecentName(name);
-            tx.write?.();
+            setRecentName(name)
+            tx.write?.()
           }}
           width="45"
         >
@@ -134,7 +148,7 @@ export default function Home() {
           if (receipt.isSuccess) {
             return (
               <p>
-                {"success! "}
+                {'success! '}
                 <a
                   href={`https://app.ens.domains/${recentName}.teamnick.eth`}
                   target="_blank"
@@ -146,31 +160,31 @@ export default function Home() {
                 </a>
                 is live!
               </p>
-            );
+            )
           }
 
           if (receipt.isError) {
-            return <p>failed!</p>;
+            return <p>failed!</p>
           }
 
           if (receipt.isLoading) {
-            return <p>processing...</p>;
+            return <p>processing...</p>
           }
 
-          return <p>Names don't mint themselves. Clickety click.</p>;
+          return <p>Names don't mint themselves. Clickety click.</p>
         })()}
       </div>
       <div className="py-10">
-        <SubNameTable names={ponder.data?.data.names} />
+        <SubNameTable names={ponder.profiles} />
       </div>
       {/* <div className="max-w-xl  mx-auto">
         <UpdateRecords names={ponder.data?.data.names} />
       </div> */}
     </main>
-  );
+  )
 }
 
-function SubNameTable({ names }: { names: Name[] | undefined }) {
+function SubNameTable({ names }: { names: Profile[] | undefined }) {
   return (
     <>
       <div className="max-w-xl grow my-0 mx-auto bg-white rounded-lg p-5 relative min-w-[480px]">
@@ -192,7 +206,7 @@ function SubNameTable({ names }: { names: Name[] | undefined }) {
               <tr
                 key={name.id}
                 className={`${
-                  index % 2 === 0 ? "bg-gray-50" : ""
+                  index % 2 === 0 ? 'bg-gray-50' : ''
                 } border-b border-gray-200`}
               >
                 <td className="flex pl-3 py-4">
@@ -202,13 +216,13 @@ function SubNameTable({ names }: { names: Name[] | undefined }) {
                     rel="noopener noreferrer"
                     className=" hover:text-blue-800 "
                   >
-                    {name.name}
+                    {name.label}
                     <span className="opacity-50">.teamnick.eth</span>
                   </a>
                 </td>
                 <td className="text-right pr-4 py-2 ">
                   <FormattedAddressLink
-                    address={name.ethAddress}
+                    address={name.address}
                     explorerUrl="https://basescan.org/address"
                   />
                 </td>
@@ -224,24 +238,24 @@ function SubNameTable({ names }: { names: Name[] | undefined }) {
         </table>
       </div>
     </>
-  );
+  )
 }
 
 const FormattedAddressLink = ({
   address,
   explorerUrl,
 }: {
-  address: string;
-  explorerUrl: string;
+  address: string
+  explorerUrl: string
 }) => {
   if (!address || address.length < 10) {
-    return <span>{address}</span>;
+    return <span>{address}</span>
   }
 
   const formattedAddress = `${address.substring(0, 6)}...${address.substring(
     address.length - 4
-  )}`;
-  const fullUrl = `${explorerUrl}/${address}`;
+  )}`
+  const fullUrl = `${explorerUrl}/${address}`
 
   return (
     <a
@@ -252,11 +266,11 @@ const FormattedAddressLink = ({
     >
       {formattedAddress}
     </a>
-  );
-};
+  )
+}
 
 function hashLabel(label: string) {
-  return BigInt(keccak256(encodePacked(["string"], [label])));
+  return BigInt(keccak256(encodePacked(['string'], [label])))
 }
 
 // export function UpdateRecords({ names }: { names: Name[] | undefined }) {

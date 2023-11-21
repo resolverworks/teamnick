@@ -23,14 +23,14 @@ export async function GET(
 
   const { id } = safeParse.data
 
-  const name = await getNameByTokenId(id)
+  const profile = await getNameByTokenId(id)
 
-  if (!name) {
+  if (!profile) {
     return NextResponse.json({ error: 'Invalid token id' }, { status: 404 })
   }
 
   return NextResponse.json({
-    name: name.name + '.teamnick.eth',
+    name: profile.name,
     description: 'Subname of teamnick.eth',
     image: `${baseUrl}/nft/${id}/image`,
   })

@@ -1,21 +1,24 @@
-import { Name, PonderResponse } from '@/lib/ponder'
+import { Profile, PonderResponse, ponderUrl } from '@/lib/ponder'
 import { useFetch } from 'usehooks-ts'
 
-export function usePonder() {
+// Key is used to trigger a re-fetch
+export function usePonder({ key }: { key?: string | undefined }) {
   const graphQlQuery = `
     query {
-      names {
+      profiles (orderBy: "registeredAt", orderDirection: "desc") {
         id
         name
+        label
         owner
-        ethAddress
+        address
         avatar
+        registeredAt
       }
     }
   `
 
-  return useFetch<PonderResponse<{ names: Name[] }>>(
-    'https://teamnick.up.railway.app/',
+  const { data, error } = useFetch<PonderResponse<{ profiles: Profile[] }>>(
+    ponderUrl + '?key=' + (key || ''),
     {
       method: 'POST',
       headers: {
@@ -24,4 +27,10 @@ export function usePonder() {
       body: JSON.stringify({ query: graphQlQuery }),
     }
   )
+
+  return {
+    profiles: data?.data?.profiles,
+    error,
+    isLoading: !data && !error,
+  }
 }

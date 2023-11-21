@@ -9,10 +9,10 @@ const EMPTY_CONTENT_HASH = '0x'
 const TTL = 1000
 
 const l2Registry = {
-  address: '0xd966a7be6d7dc7269d302b5e6d884b221e1a72b4' as Address,
+  address: '0x32ed01dea1816712bfbdf579cb8063dfb5c1dcbd' as Address,
   abi: parseAbi([
-    'function getEthAddressByName(string calldata name) public view returns (address)',
-    'function getAvatarByName(string calldata name) public view returns (string memory)',
+    'function addrByName(string calldata name) public view returns (address)',
+    'function avatarByName(string calldata name) public view returns (string memory)',
   ]),
 }
 
@@ -47,7 +47,7 @@ export const database: Database = {
       if (coinType === 60) {
         address = await readContract(client, {
           ...l2Registry,
-          functionName: 'getEthAddressByName',
+          functionName: 'addrByName',
           args: [name],
         })
       }
@@ -70,7 +70,7 @@ export const database: Database = {
       if (key === 'avatar') {
         value = await readContract(client, {
           ...l2Registry,
-          functionName: 'getAvatarByName',
+          functionName: 'avatarByName',
           args: [name],
         })
       }

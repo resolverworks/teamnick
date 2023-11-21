@@ -3,10 +3,12 @@
 # Your schema will be more flexible and powerful if it accurately models the logical relationships in your application's domain.
 # Visit the [documentation](https://ponder.sh/guides/design-your-schema) or the [`examples/`](https://github.com/0xOlias/ponder/tree/main/examples) directory for further guidance on designing your schema.
 
-type Name @entity {
+type Profile @entity {
   id: BigInt!
+  label: String!
   name: String!
   owner: String!
-  ethAddress: String!
+  address: String!
   avatar: String!
+  registeredAt: BigInt!
 }

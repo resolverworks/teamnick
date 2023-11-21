@@ -1,7 +1,7 @@
 import { Address } from 'viem'
 
 export const l2Registry = {
-  address: '0xd966A7be6d7dC7269D302B5e6D884B221E1a72B4' as Address,
+  address: '0x32ed01dea1816712bfbdf579cb8063dfb5c1dcbd' as Address,
   abi: [
     {
       inputs: [
@@ -86,6 +86,25 @@ export const l2Registry = {
       inputs: [
         {
           indexed: true,
+          internalType: 'uint256',
+          name: 'node',
+          type: 'uint256',
+        },
+        {
+          indexed: true,
+          internalType: 'address',
+          name: 'addr',
+          type: 'address',
+        },
+      ],
+      name: 'AddressChanged',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
           internalType: 'address',
           name: 'owner',
           type: 'address',
@@ -136,6 +155,25 @@ export const l2Registry = {
       inputs: [
         {
           indexed: true,
+          internalType: 'uint256',
+          name: 'node',
+          type: 'uint256',
+        },
+        {
+          indexed: false,
+          internalType: 'string',
+          name: 'avatar',
+          type: 'string',
+        },
+      ],
+      name: 'AvatarChanged',
+      type: 'event',
+    },
+    {
+      anonymous: false,
+      inputs: [
+        {
+          indexed: true,
           internalType: 'address',
           name: 'previousOwner',
           type: 'address',
@@ -173,31 +211,6 @@ export const l2Registry = {
           type: 'uint256',
         },
         {
-          indexed: true,
-          internalType: 'address',
-          name: 'ethAddress',
-          type: 'address',
-        },
-        {
-          indexed: false,
-          internalType: 'string',
-          name: 'avatar',
-          type: 'string',
-        },
-      ],
-      name: 'RecordsUpdated',
-      type: 'event',
-    },
-    {
-      anonymous: false,
-      inputs: [
-        {
-          indexed: true,
-          internalType: 'uint256',
-          name: 'node',
-          type: 'uint256',
-        },
-        {
           indexed: false,
           internalType: 'string',
           name: 'name',
@@ -212,7 +225,7 @@ export const l2Registry = {
         {
           indexed: true,
           internalType: 'address',
-          name: 'ethAddress',
+          name: 'addr',
           type: 'address',
         },
         {
@@ -259,6 +272,20 @@ export const l2Registry = {
       type: 'event',
     },
     {
+      inputs: [{ internalType: 'uint256', name: 'node', type: 'uint256' }],
+      name: 'addr',
+      outputs: [{ internalType: 'address', name: '', type: 'address' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [{ internalType: 'string', name: 'name', type: 'string' }],
+      name: 'addrByName',
+      outputs: [{ internalType: 'address', name: '', type: 'address' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
       inputs: [
         { internalType: 'address', name: 'to', type: 'address' },
         { internalType: 'uint256', name: 'tokenId', type: 'uint256' },
@@ -266,6 +293,27 @@ export const l2Registry = {
       name: 'approve',
       outputs: [],
       stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [{ internalType: 'string', name: 'name', type: 'string' }],
+      name: 'available',
+      outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [{ internalType: 'uint256', name: 'node', type: 'uint256' }],
+      name: 'avatar',
+      outputs: [{ internalType: 'string', name: '', type: 'string' }],
+      stateMutability: 'view',
+      type: 'function',
+    },
+    {
+      inputs: [{ internalType: 'string', name: 'name', type: 'string' }],
+      name: 'avatarByName',
+      outputs: [{ internalType: 'string', name: '', type: 'string' }],
+      stateMutability: 'view',
       type: 'function',
     },
     {
@@ -285,34 +333,6 @@ export const l2Registry = {
     {
       inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
       name: 'getApproved',
-      outputs: [{ internalType: 'address', name: '', type: 'address' }],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [{ internalType: 'uint256', name: 'node', type: 'uint256' }],
-      name: 'getAvatar',
-      outputs: [{ internalType: 'string', name: '', type: 'string' }],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [{ internalType: 'string', name: 'name', type: 'string' }],
-      name: 'getAvatarByName',
-      outputs: [{ internalType: 'string', name: '', type: 'string' }],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [{ internalType: 'uint256', name: 'node', type: 'uint256' }],
-      name: 'getEthAddress',
-      outputs: [{ internalType: 'address', name: '', type: 'address' }],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [{ internalType: 'string', name: 'name', type: 'string' }],
-      name: 'getEthAddressByName',
       outputs: [{ internalType: 'address', name: '', type: 'address' }],
       stateMutability: 'view',
       type: 'function',
@@ -380,7 +400,7 @@ export const l2Registry = {
       inputs: [
         { internalType: 'string', name: 'name', type: 'string' },
         { internalType: 'address', name: 'owner', type: 'address' },
-        { internalType: 'address', name: 'ethAddress', type: 'address' },
+        { internalType: 'address', name: 'addr', type: 'address' },
         { internalType: 'string', name: 'avatar', type: 'string' },
       ],
       name: 'register',
@@ -414,6 +434,16 @@ export const l2Registry = {
         { internalType: 'bytes', name: 'data', type: 'bytes' },
       ],
       name: 'safeTransferFrom',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    {
+      inputs: [
+        { internalType: 'uint256', name: 'node', type: 'uint256' },
+        { internalType: 'address', name: 'addr', type: 'address' },
+      ],
+      name: 'setAddr',
       outputs: [],
       stateMutability: 'nonpayable',
       type: 'function',
@@ -518,17 +548,7 @@ export const l2Registry = {
     {
       inputs: [
         { internalType: 'uint256', name: 'node', type: 'uint256' },
-        { internalType: 'address', name: 'ethAddress', type: 'address' },
-      ],
-      name: 'updateEthAddress',
-      outputs: [],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    {
-      inputs: [
-        { internalType: 'uint256', name: 'node', type: 'uint256' },
-        { internalType: 'address', name: 'ethAddress', type: 'address' },
+        { internalType: 'address', name: 'addr', type: 'address' },
         { internalType: 'string', name: 'avatar', type: 'string' },
       ],
       name: 'updateRecords',
