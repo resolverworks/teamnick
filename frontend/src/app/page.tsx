@@ -211,7 +211,7 @@ function SubNameTable({ names }: { names: Profile[] | undefined }) {
               >
                 <td className="flex pl-3 py-4">
                   <a
-                    href={`https://app.ens.domains/${name.name}.teamnick.eth`}
+                    href={`https://app.ens.domains/${name.name}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className=" hover:text-blue-800 "

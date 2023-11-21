@@ -1,4 +1,3 @@
-import type { Contract } from 'ethers'
 import { Address, Client, parseAbi } from 'viem'
 import { readContract } from 'viem/actions'
 
