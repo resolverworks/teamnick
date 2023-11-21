@@ -2,11 +2,10 @@
 pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract TeamNick is ERC721, ERC721Enumerable, ERC721Pausable, Ownable {
+contract TeamNick is ERC721, ERC721Pausable, Ownable {
     event Registered(uint256 indexed node, string name, address indexed owner, address indexed addr, string avatar);
     event AddressChanged(uint256 indexed node, address indexed addr);
     event AvatarChanged(uint256 indexed node, string avatar);
@@ -21,6 +20,7 @@ contract TeamNick is ERC721, ERC721Enumerable, ERC721Pausable, Ownable {
 
     // uint256 is the NFT token ID and a hash of the name
     mapping (uint256 => Record) records;
+    uint256 public totalSupply;
     string public baseUri;
 
     constructor(address _initialOwner, string memory _baseUri)
@@ -52,6 +52,7 @@ contract TeamNick is ERC721, ERC721Enumerable, ERC721Pausable, Ownable {
         _safeMint(owner, node); // This will fail if the node is already registered
         records[node].addr = addr;
         records[node].avatar = avatar;
+        totalSupply++;
 
         emit Registered(node, name, owner, addr, avatar);
     }
@@ -144,25 +145,9 @@ contract TeamNick is ERC721, ERC721Enumerable, ERC721Pausable, Ownable {
 
     function _update(address to, uint256 tokenId, address auth)
         internal
-        override(ERC721, ERC721Enumerable, ERC721Pausable)
+        override(ERC721, ERC721Pausable)
         returns (address)
     {
         return super._update(to, tokenId, auth);
-    }
-
-    function _increaseBalance(address account, uint128 value)
-        internal
-        override(ERC721, ERC721Enumerable)
-    {
-        super._increaseBalance(account, value);
-    }
-
-    function supportsInterface(bytes4 interfaceId)
-        public
-        view
-        override(ERC721, ERC721Enumerable)
-        returns (bool)
-    {
-        return super.supportsInterface(interfaceId);
     }
 }
