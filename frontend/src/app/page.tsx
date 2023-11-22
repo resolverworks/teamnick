@@ -11,21 +11,13 @@ import {
   useWaitForTransaction,
 } from 'wagmi'
 import { useDebounce } from 'usehooks-ts'
-import {
-  Avatar,
-  Button,
-  Input,
-  Typography,
-  FieldSet,
-  Select,
-  Card,
-  RecordItem,
-} from '@ensdomains/thorin'
+import { Button, Input, Typography } from '@ensdomains/thorin'
 import React, { useState, useEffect } from 'react'
 
 import { l2Registry } from '@/lib/l2-registry'
 import { Profile } from '@/lib/ponder'
 import { usePonder } from '@/hooks/usePonder'
+import NavBar from './components/NavBar'
 
 const validateInput = (input: string) => {
   if (input.length < 2 || input.length > 10) {
@@ -93,9 +85,7 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col  max-w-3xl w-full mx-auto">
-      <div className="flex py-10  justify-end">
-        <ConnectButton chainStatus="none" showBalance={false} />
-      </div>
+      <NavBar />
       <div className="flex flex-col pb-12 pt-2">
         <Typography
           fontVariant="extraLargeBold"
@@ -272,154 +262,3 @@ const FormattedAddressLink = ({
 function hashLabel(label: string) {
   return BigInt(keccak256(encodePacked(['string'], [label])))
 }
-
-// export function UpdateRecords({ names }: { names: Name[] | undefined }) {
-//   const { address } = useAccount();
-//   const [selectOptions, setSelectOptions] = useState([]);
-//   const [fullDataMapping, setFullDataMapping] = useState({});
-//   const [selectedOption, setSelectedOption] = useState(null);
-//   const [isValid, setIsValid] = useState(false);
-//   const [ownerAddress, setOwnerAddress] = useState("");
-//   const [ethAddress, setEthAddress] = useState("");
-//   const [selectedName, setSelectedName] = useState("");
-
-//   // const [avatar,setAvatar] = useState("");
-//   const [node, setNode] = useState("");
-//   const isValidEthAddress = (address: string) => {
-//     return /^0x[a-fA-F0-9]{40}$/.test(address);
-//   };
-
-//   // const { data, isError, isLoading } = useContractReads({
-//   //   contracts: [
-//   //     {
-//   //       ...l2Registry,
-//   //       functionName: "getEthAddressByName",
-//   //       args: [name],
-//   //     },
-//   //     {
-//   //       ...l2Registry,
-//   //       functionName: "totalSupply",
-//   //     },
-//   //   ],
-//   // });
-
-//   useEffect(() => {
-//     if (Array.isArray(names.names)) {
-//       const newOptions = [];
-//       const newMapping = {};
-
-//       names.names
-//         .filter((item) => item.owner === address)
-//         .forEach((item, index) => {
-//           const value = String(index); // Unique identifier for the option
-//           newOptions.push({
-//             value: value,
-//             label: item.name + ".teamnick.eth",
-//           });
-//           newMapping[value] = item; // Store the full item data in the mapping
-//         });
-
-//       setSelectOptions(newOptions);
-//       setFullDataMapping(newMapping); // Set the full data mapping
-//     }
-//   }, [names, address]);
-
-//   const handleSelection = (event) => {
-//     const selectedValue = event.target.value;
-//     const fullData = fullDataMapping[selectedValue];
-//     setSelectedOption(fullData); // Set the selected option's full data
-//   };
-
-//   useEffect(() => {
-//     const isOwnerValid = ownerAddress === "" || isValidEthAddress(ownerAddress);
-//     const isEthAddressValid =
-//       ethAddress === "" || isValidEthAddress(ethAddress);
-//     setIsValid(isOwnerValid && isEthAddressValid);
-//   }, [ownerAddress, ethAddress]);
-
-//   // const prepareConfig = useMemo(
-//   //   () => ({
-//   //     ...l2Registry,
-//   //     functionName: "updateRecords",
-//   //     args: address
-//   //       ? [
-//   //           node,
-//   //           ownerAddress,
-//   //           avatar,
-//   //         ]
-//   //       : undefined,
-//   //   }),
-//   //   [name, address]
-//   // );
-
-//   // const prepare = usePrepareContractWrite(prepareConfig);
-//   // const tx = useContractWrite(prepare.config);
-//   // const receipt = useWaitForTransaction(tx.data);
-
-//   useEffect(() => {
-//     if (selectedOption) {
-//       setSelectedName(selectedOption.name);
-//       console.log(hashLabel(selectedName));
-//     }
-//   }, [selectedOption]);
-
-//   return (
-//     <div className=" min-w-[480px]">
-//       <Card>
-//         <Select
-//           autocomplete
-//           options={selectOptions}
-//           placeholder="Select an option..."
-//           tabIndex="2"
-//           onChange={handleSelection}
-//         />
-//         {selectedOption && (
-//           <>
-//             <RecordItem keyLabel="Owner" value={selectedOption.owner}>
-//               {selectedOption.owner}
-//             </RecordItem>
-//             <RecordItem
-//               keyLabel="Eth Address"
-//               value={selectedOption.ethAddress}
-//             >
-//               {selectedOption.ethAddress}
-//             </RecordItem>
-//             <RecordItem keyLabel="Avatar" value={selectedOption.avatar}>
-//               {selectedOption.avatar}
-//             </RecordItem>
-//           </>
-//         )}
-//       </Card>
-//       {selectedOption && selectedOption.avatar && (
-//         <div className=" max-w-[32px] ml-[44px] -mt-[60px] mb-[60px]">
-//           <Avatar label="" src={selectedOption.avatar || ""} />
-//         </div>
-//       )}
-
-//       <FieldSet legend="Update Records">
-//         <Input
-//           label="Owner"
-//           placeholder="0x5423..."
-//           value={ownerAddress}
-//           onChange={(e) => setOwnerAddress(e.target.value)}
-//         />
-//         <Input
-//           label="Eth Address"
-//           placeholder="0x5423.."
-//           value={ethAddress}
-//           onChange={(e) => setEthAddress(e.target.value)}
-//         />
-//         <Input label="Avatar" placeholder="https://" />
-//         <div className="pb-4  mx-auto">
-//           <Button
-//             // onClick=
-//             width="45"
-//             disabled={!isValid} // Disable button based on validity
-//           >
-//             Update Records
-//           </Button>
-//         </div>
-//       </FieldSet>
-//     </div>
-//   );
-// }
