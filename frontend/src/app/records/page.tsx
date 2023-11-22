@@ -50,7 +50,7 @@ export default function Records() {
   )
 }
 
-export function DisplayRecords() {
+function DisplayRecords() {
   const { address } = useAccount()
   const ponder = usePonder({})
   const [selectedName, setSelectedName] = useState<string | null>(null)
@@ -113,7 +113,8 @@ export function DisplayRecords() {
     </div>
   )
 }
-export function UpdateRecords({ records }: { records: Profile[] | undefined }) {
+
+function UpdateRecords({ records }: { records: Profile[] | undefined }) {
   const { address } = useAccount()
   const [isValid, setIsValid] = useState(false)
   const [ethAddress, setEthAddress] = useState('')
