@@ -17,7 +17,6 @@ import {
   Button,
   Input,
   Typography,
-  FieldSet,
   Select,
   Card,
   RecordItem,
@@ -32,7 +31,7 @@ import { l2Registry } from '@/lib/l2-registry'
 
 export default function Records() {
   return (
-    <main className="flex min-h-screen flex-col  max-w-3xl w-full mx-auto">
+    <main className="flex min-h-screen flex-col  max-w-3xl w-full mx-auto px-1">
       <NavBar />
       <div className="flex flex-col pb-12 pt-2">
         <Typography
@@ -66,17 +65,14 @@ function DisplayRecords() {
         label: profile.name, // The name will be shown in the dropdown
       })) || []
 
-  console.log(filteredNames)
-
   useEffect(() => {
     const newRecords =
       ponder.profiles?.filter((profile) => profile.id === selectedName) || []
     setRecords(newRecords)
   }, [selectedName])
 
-  console.log(records)
   return (
-    <div className="w-full pt-4 max-w-xl  mx-auto  relative min-w-[480px]">
+    <div className="w-full pt-4 max-w-xl  mx-auto  relative min-w-[360px]">
       <Card>
         <Select
           label=""
@@ -145,7 +141,7 @@ function UpdateRecords({ records }: { records: Profile[] | undefined }) {
   }, [ethAddress])
 
   return (
-    <div className="flex  flex-col min-w-[480px] gap-6">
+    <div className="flex  flex-col min-w-[360px] gap-6">
       <Input
         label="Eth Address"
         placeholder="0x5423.."
