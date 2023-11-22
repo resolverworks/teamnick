@@ -16,7 +16,7 @@ export type Profile = {
   registeredAt: string
 }
 
-export const ponderUrl = 'https://teamnick.up.railway.app/'
+export const ponderUrl = 'https://teamnick-production.up.railway.app'
 
 export async function getNameByTokenId(id: string) {
   const res = await fetch(ponderUrl, {
