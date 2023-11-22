@@ -3,13 +3,10 @@
 import {
   Address,
   useAccount,
-  useBlockNumber,
-  useContractRead,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
 } from 'wagmi'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import React, { useState, useEffect } from 'react'
 import { usePonder } from '@/hooks/usePonder'
 import {
@@ -20,13 +17,10 @@ import {
   Select,
   Card,
   RecordItem,
+  Spinner,
 } from '@ensdomains/thorin'
-
 import { Profile } from '@/lib/ponder'
-
-import Link from 'next/link'
 import NavBar from '../components/NavBar'
-
 import { l2Registry } from '@/lib/l2-registry'
 
 export default function Records() {
@@ -51,7 +45,10 @@ export default function Records() {
 
 function DisplayRecords() {
   const { address } = useAccount()
-  const ponder = usePonder({})
+  const [ponderCacheKey, setPonderCacheKey] = useState<string | undefined>()
+  const ponder = usePonder({
+    key: ponderCacheKey,
+  })
   const [selectedName, setSelectedName] = useState<string | null>(null)
   const [records, setRecords] = useState<Profile[] | null>(null)
 
@@ -95,7 +92,7 @@ function DisplayRecords() {
               </div>
               <div className="grow my-auto">
                 <RecordItem keyLabel="Avatar" value={records[0].avatar}>
-                  {records[0].avatar.substring(0, 30)}...
+                  {records[0].avatar.substring(0, 30) + '...'}
                 </RecordItem>
               </div>
             </div>
@@ -108,7 +105,7 @@ function DisplayRecords() {
             {/* <RecordItem keyLabel="node" value={records[0].id}>
               {records[0].id}
             </RecordItem> */}
-            <div className=" pl-2 text-lg font-sans font-bold">Update</div>
+
             <UpdateRecords records={records} />
           </>
         )}
@@ -119,33 +116,67 @@ function DisplayRecords() {
 
 function UpdateRecords({ records }: { records: Profile[] | undefined }) {
   const { address } = useAccount()
-  const [isValid, setIsValid] = useState(false)
+  const [isValidAddress, setIsValidAddress] = useState(false)
+  const [isValidAvatar, setIsValidAvatar] = useState(false)
   const [ethAddress, setEthAddress] = useState('')
   const [avatar, setAvatar] = useState('')
+  const [AvatarMsg, setAvatarMsg] = useState('')
   const isValidEthAddress = (address: string) => {
     return /^0x[a-fA-F0-9]{40}$/.test(address)
   }
 
-  const prepare = usePrepareContractWrite({
+  // const prepare = usePrepareContractWrite({
+  //   ...l2Registry,
+  //   functionName: 'updateRecords',
+  //   enabled: isValid,
+  //   args: records
+  //     ? [BigInt(records[0].id), ethAddress as Address, avatar]
+  //     : undefined,
+  // })
+
+  // const tx = useContractWrite(prepare.config)
+  // const receipt = useWaitForTransaction(tx.data)
+
+  const prepareSetAddr = usePrepareContractWrite({
     ...l2Registry,
-    functionName: 'updateRecords',
-    enabled: isValid,
-    args: records
-      ? [BigInt(records[0].id), ethAddress as Address, avatar]
-      : undefined,
+    functionName: 'setAddr',
+    enabled: isValidAddress,
+    args: records ? [BigInt(records[0].id), ethAddress as Address] : undefined,
   })
 
-  const tx = useContractWrite(prepare.config)
-  const receipt = useWaitForTransaction(tx.data)
+  const setAddrTx = useContractWrite(prepareSetAddr.config)
+  const setAddrReceipt = useWaitForTransaction(setAddrTx.data)
 
-  console.log('update', ethAddress, isValid)
-  console.log(records)
+  const prepareUpdateAvatar = usePrepareContractWrite({
+    ...l2Registry,
+    functionName: 'updateAvatar',
+    enabled: isValidAvatar,
+    args: records ? [BigInt(records[0].id), avatar] : undefined,
+  })
+
+  const updateAvatarTx = useContractWrite(prepareUpdateAvatar.config)
+  const updateAvatarReceipt = useWaitForTransaction(updateAvatarTx.data)
 
   useEffect(() => {
     if (isValidEthAddress(ethAddress)) {
-      setIsValid(true)
+      setIsValidAddress(true)
+    } else {
+      setIsValidAddress(false)
     }
   }, [ethAddress])
+
+  useEffect(() => {
+    if (/\.(jpg|jpeg|png)$/.test(avatar) && avatar !== '') {
+      setIsValidAvatar(true)
+      setAvatarMsg('')
+    } else if (avatar === '') {
+      setIsValidAvatar(false)
+      setAvatarMsg('')
+    } else {
+      setAvatarMsg('Avatar must end in jpg, jpeg, or png')
+      setIsValidAvatar(false)
+    }
+  }, [avatar])
 
   return (
     <div className="flex  flex-col min-w-[360px] gap-6">
@@ -155,14 +186,38 @@ function UpdateRecords({ records }: { records: Profile[] | undefined }) {
         value={ethAddress}
         onChange={(e) => setEthAddress(e.target.value)}
       />
-      <Input label="Avatar" placeholder="https://" />
+      <div className=" text-center">
+        {setAddrReceipt.isSuccess && (
+          <div>Eth address updated successfully!</div>
+        )}
+      </div>
+      <div className="mx-auto">
+        <Button
+          onClick={() => setAddrTx.write?.()}
+          width="45"
+          disabled={!isValidAddress} // Disable button based on validity
+        >
+          Update Address
+        </Button>
+      </div>
+      <Input
+        label="Avatar"
+        placeholder="https://"
+        value={avatar}
+        onChange={(e) => setAvatar(e.target.value)}
+      />
+      <div className="min-h-[20px] text-red-400 mx-auto">
+        {' '}
+        {AvatarMsg} {updateAvatarReceipt.isLoading && <Spinner />}
+        {updateAvatarReceipt.isSuccess && 'Avatar updated successfully'}
+      </div>
       <div className="pb-4  mx-auto">
         <Button
-          // onClick=
+          onClick={() => updateAvatarTx.write?.()}
           width="45"
-          disabled={!isValid} // Disable button based on validity
+          disabled={!isValidAvatar} // Disable button based on validity
         >
-          Update Records
+          Update Avatar
         </Button>
       </div>
     </div>
