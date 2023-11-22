@@ -87,6 +87,38 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
     }
 
     ////////////////////////////////////////////////
+    //                 OVERRIDES                  //
+    ////////////////////////////////////////////////
+
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId,
+        bytes memory _data
+    ) public override(ERC721) {
+        setAddr(tokenId, to);
+        super.safeTransferFrom(from, to, tokenId, _data);
+    }
+
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public override(ERC721) {
+        setAddr(tokenId, to);
+        super.safeTransferFrom(from, to, tokenId);
+    }
+
+    function transferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) public override(ERC721) {
+        setAddr(tokenId, to);
+        super.transferFrom(from, to, tokenId);
+    }
+
+    ////////////////////////////////////////////////
     //               READ FUNCTIONS               //
     ////////////////////////////////////////////////
 
