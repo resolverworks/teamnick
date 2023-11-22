@@ -83,25 +83,32 @@ function DisplayRecords() {
         />
         {records && records.length > 0 && (
           <>
-            <div>Current</div>
             <RecordItem keyLabel="Owner" value={records[0].owner}>
               {records[0].owner}
             </RecordItem>
             <RecordItem keyLabel="Eth Address" value={records[0].address}>
               {records[0].address}
             </RecordItem>
-            <RecordItem keyLabel="Avatar" value={records[0].avatar}>
-              {records[0].avatar}
-            </RecordItem>
+            <div className="flex flex-row">
+              <div className=" max-w-[75px] min-w-[75px] mx-2 my-auto">
+                <Avatar label="Noun 97" src={records[0].avatar} />
+              </div>
+              <div className="grow my-auto">
+                <RecordItem keyLabel="Avatar" value={records[0].avatar}>
+                  {records[0].avatar.substring(0, 30)}...
+                </RecordItem>
+              </div>
+            </div>
             {/* <RecordItem
               keyLabel="Registrion Time"
               value={records[0].registeredAt}
             >
               {records[0].registeredAt}
             </RecordItem> */}
-            <RecordItem keyLabel="node" value={records[0].id}>
+            {/* <RecordItem keyLabel="node" value={records[0].id}>
               {records[0].id}
-            </RecordItem>
+            </RecordItem> */}
+            <div className=" pl-2 text-lg font-sans font-bold">Update</div>
             <UpdateRecords records={records} />
           </>
         )}
