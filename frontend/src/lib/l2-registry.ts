@@ -1,7 +1,7 @@
 import { Address } from 'viem'
 
 export const l2Registry = {
-  address: '0x32ed01dea1816712bfbdf579cb8063dfb5c1dcbd' as Address,
+  address: '0xed594c91d056340fb24856edb1c2ca90e153a9a2' as Address,
   abi: [
     {
       inputs: [
@@ -11,7 +11,6 @@ export const l2Registry = {
       stateMutability: 'nonpayable',
       type: 'constructor',
     },
-    { inputs: [], name: 'ERC721EnumerableForbiddenBatchMint', type: 'error' },
     {
       inputs: [
         { internalType: 'address', name: 'sender', type: 'address' },
@@ -57,14 +56,6 @@ export const l2Registry = {
     {
       inputs: [{ internalType: 'uint256', name: 'tokenId', type: 'uint256' }],
       name: 'ERC721NonexistentToken',
-      type: 'error',
-    },
-    {
-      inputs: [
-        { internalType: 'address', name: 'owner', type: 'address' },
-        { internalType: 'uint256', name: 'index', type: 'uint256' },
-      ],
-      name: 'ERC721OutOfBoundsIndex',
       type: 'error',
     },
     { inputs: [], name: 'EnforcedPause', type: 'error' },
@@ -476,23 +467,6 @@ export const l2Registry = {
       inputs: [],
       name: 'symbol',
       outputs: [{ internalType: 'string', name: '', type: 'string' }],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [{ internalType: 'uint256', name: 'index', type: 'uint256' }],
-      name: 'tokenByIndex',
-      outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-      stateMutability: 'view',
-      type: 'function',
-    },
-    {
-      inputs: [
-        { internalType: 'address', name: 'owner', type: 'address' },
-        { internalType: 'uint256', name: 'index', type: 'uint256' },
-      ],
-      name: 'tokenOfOwnerByIndex',
-      outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
       stateMutability: 'view',
       type: 'function',
     },

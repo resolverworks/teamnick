@@ -70,8 +70,8 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
     }
 
     function updateRecords(uint256 node, address addr, string calldata avatar) public authorised(node) {
-        this.setAddr(node, addr);
-        this.updateAvatar(node, avatar);
+        setAddr(node, addr);
+        updateAvatar(node, avatar);
     }
 
     function setBaseURI(string memory _baseUri) public onlyOwner {
