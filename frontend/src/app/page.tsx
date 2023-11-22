@@ -84,7 +84,7 @@ export default function Home() {
   }, [receipt.isSuccess])
 
   return (
-    <main className="flex min-h-screen flex-col  max-w-3xl w-full mx-auto">
+    <main className="flex min-h-screen flex-col  max-w-3xl w-full mx-auto px-1">
       <NavBar />
       <div className="flex flex-col pb-12 pt-2">
         <Typography
@@ -93,12 +93,21 @@ export default function Home() {
         >
           Team Nick's Mint Count: {totalSupply}
         </Typography>
-        <Typography className=" text-center text-gray-600 max-w-12">
-          Register a free ENS Subname on Base. Works on mainnet!
+        <Typography className="text-center text-gray-400 max-w-12">
+          Register a free ENS Subname on Base. Tradable on{' '}
+          <a
+            href="https://opensea.io/"
+            className="underline hover:text-blue-600"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            OpenSea
+          </a>
+          !
         </Typography>
       </div>
 
-      <div className="max-w-sm pb-4 w-1/2 mx-auto">
+      <div className="max-w-sm pb-4 w-full sm:w-1/2 mx-auto">
         <Input
           className="input-width"
           label="Choose a name"
@@ -177,9 +186,9 @@ export default function Home() {
 function SubNameTable({ names }: { names: Profile[] | undefined }) {
   return (
     <>
-      <div className="max-w-xl grow my-0 mx-auto bg-white rounded-lg p-5 relative min-w-[480px]">
+      <div className="max-w-xl grow my-0 mx-auto bg-white rounded-lg p-5 relative min-w-[360px]">
         <div className="text-lg mb-4 text-center font-semibold">
-          Subnames Minted So Far
+          Subnames Minted
         </div>
         <table className="w-full min-w-[360px] border-collapse">
           <thead>
@@ -242,7 +251,7 @@ const FormattedAddressLink = ({
     return <span>{address}</span>
   }
 
-  const formattedAddress = `${address.substring(0, 6)}...${address.substring(
+  const formattedAddress = `${address.substring(0, 4)}...${address.substring(
     address.length - 4
   )}`
   const fullUrl = `${explorerUrl}/${address}`
@@ -254,7 +263,7 @@ const FormattedAddressLink = ({
       rel="noopener noreferrer"
       className="text-blue-400 hover:text-blue-800 underline"
     >
-      {formattedAddress}
+      {formattedAddress.toLowerCase()}
     </a>
   )
 }
