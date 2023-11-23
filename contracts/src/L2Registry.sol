@@ -6,7 +6,13 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract TeamNick is ERC721, ERC721Pausable, Ownable {
-    event Registered(uint256 indexed node, string name, address indexed owner, address indexed addr, string avatar);
+    event Registered(
+        uint256 indexed node,
+        string name,
+        address indexed owner,
+        address indexed addr,
+        string avatar
+    );
     event AddressChanged(uint256 indexed node, address indexed addr);
     event AvatarChanged(uint256 indexed node, string avatar);
 
@@ -19,14 +25,14 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
     }
 
     // uint256 is the NFT token ID and a hash of the name
-    mapping (uint256 => Record) records;
+    mapping(uint256 => Record) records;
     uint256 public totalSupply;
     string public baseUri;
 
-    constructor(address _initialOwner, string memory _baseUri)
-        ERC721("TeamNick", "NICK")
-        Ownable(_initialOwner)
-    {
+    constructor(
+        address _initialOwner,
+        string memory _baseUri
+    ) ERC721("TeamNick", "NICK") Ownable(_initialOwner) {
         baseUri = _baseUri;
     }
 
@@ -43,11 +49,16 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
     //              WRITE FUNCTIONS               //
     ////////////////////////////////////////////////
 
-    function register(string calldata name, address owner, address addr, string calldata avatar) public {
+    function register(
+        string calldata name,
+        address owner,
+        address addr,
+        string calldata avatar
+    ) public {
         if (!_isValidName(name)) {
             revert InvalidName();
         }
-        
+
         uint256 node = hashName(name);
         _safeMint(owner, node); // This will fail if the node is already registered
         records[node].addr = addr;
@@ -63,13 +74,20 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
         emit AddressChanged(node, addr);
     }
 
-    function updateAvatar(uint256 node, string calldata avatar) public authorised(node) {
+    function updateAvatar(
+        uint256 node,
+        string calldata avatar
+    ) public authorised(node) {
         records[node].avatar = avatar;
 
         emit AvatarChanged(node, avatar);
     }
 
-    function updateRecords(uint256 node, address addr, string calldata avatar) public authorised(node) {
+    function updateRecords(
+        uint256 node,
+        address addr,
+        string calldata avatar
+    ) public authorised(node) {
         setAddr(node, addr);
         updateAvatar(node, avatar);
     }
@@ -98,15 +116,6 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
     ) public override(ERC721) {
         setAddr(tokenId, to);
         super.safeTransferFrom(from, to, tokenId, _data);
-    }
-
-    function safeTransferFrom(
-        address from,
-        address to,
-        uint256 tokenId
-    ) public override(ERC721) {
-        setAddr(tokenId, to);
-        super.safeTransferFrom(from, to, tokenId);
     }
 
     function transferFrom(
@@ -147,7 +156,9 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
         return records[node].addr;
     }
 
-    function avatarByName(string calldata name) public view returns (string memory) {
+    function avatarByName(
+        string calldata name
+    ) public view returns (string memory) {
         uint256 node = hashName(name);
         return records[node].avatar;
     }
@@ -175,11 +186,11 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
         return baseUri;
     }
 
-    function _update(address to, uint256 tokenId, address auth)
-        internal
-        override(ERC721, ERC721Pausable)
-        returns (address)
-    {
+    function _update(
+        address to,
+        uint256 tokenId,
+        address auth
+    ) internal override(ERC721, ERC721Pausable) returns (address) {
         return super._update(to, tokenId, auth);
     }
 }
