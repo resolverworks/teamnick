@@ -106,7 +106,10 @@ function DisplayRecords() {
               {records[0].id}
             </RecordItem> */}
 
-            <UpdateRecords records={records} />
+            <UpdateRecords
+              records={records}
+              setPonderCacheKey={setPonderCacheKey}
+            />
           </>
         )}
       </Card>
@@ -114,7 +117,13 @@ function DisplayRecords() {
   )
 }
 
-function UpdateRecords({ records }: { records: Profile[] | undefined }) {
+function UpdateRecords({
+  records,
+  setPonderCacheKey,
+}: {
+  records: Profile[] | undefined
+  setPonderCacheKey: (value: string) => void
+}) {
   const { address } = useAccount()
   const [isValidAddress, setIsValidAddress] = useState(false)
   const [isValidAvatar, setIsValidAvatar] = useState(false)
@@ -178,6 +187,15 @@ function UpdateRecords({ records }: { records: Profile[] | undefined }) {
     }
   }, [avatar])
 
+  useEffect(() => {
+    if (updateAvatarTx.isSuccess || setAddrReceipt.isSuccess) {
+      // wait 1 second for ponder to index the transaction
+      setTimeout(() => {
+        setPonderCacheKey(updateAvatarReceipt.data?.transactionHash as string)
+      }, 1000)
+    }
+  }, [updateAvatarTx.isSuccess, setAddrReceipt.isSuccess])
+  console.log(updateAvatarReceipt.isSuccess)
   return (
     <div className="flex  flex-col min-w-[360px] gap-6">
       <Input
