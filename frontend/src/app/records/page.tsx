@@ -45,12 +45,10 @@ export default function Records() {
 
 function DisplayRecords() {
   const { address } = useAccount()
-  const [ponderCacheKey, setPonderCacheKey] = useState<string | undefined>()
-  const ponder = usePonder({
-    key: ponderCacheKey,
-  })
   const [selectedName, setSelectedName] = useState<string | null>(null)
-  const [records, setRecords] = useState<Profile[] | null>(null)
+  const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null)
+
+  const ponder = usePonder()
 
   const filteredNames =
     ponder.profiles
@@ -63,10 +61,12 @@ function DisplayRecords() {
       })) || []
 
   useEffect(() => {
-    const newRecords =
-      ponder.profiles?.filter((profile) => profile.id === selectedName) || []
-    setRecords(newRecords)
-  }, [selectedName])
+    if (ponder.profiles && selectedName) {
+      // prettier-ignore
+      const filteredProfiles = ponder.profiles.filter((profile) => profile.id === selectedName) || []
+      setSelectedProfile(filteredProfiles[0])
+    }
+  }, [selectedName, ponder.profiles])
 
   return (
     <div className="w-full pt-4 max-w-xl  mx-auto  relative min-w-[360px]">
@@ -78,37 +78,37 @@ function DisplayRecords() {
           placeholder="Select a Name"
           onChange={(event) => setSelectedName(event.target.value)}
         />
-        {records && records.length > 0 && (
+        {selectedProfile && (
           <>
-            <RecordItem keyLabel="Owner" value={records[0].owner}>
-              {records[0].owner}
+            <RecordItem keyLabel="Owner" value={selectedProfile.owner}>
+              {selectedProfile.owner}
             </RecordItem>
-            <RecordItem keyLabel="Eth Address" value={records[0].address}>
-              {records[0].address}
+            <RecordItem keyLabel="Eth Address" value={selectedProfile.address}>
+              {selectedProfile.address}
             </RecordItem>
             <div className="flex flex-row">
               <div className=" max-w-[75px] min-w-[75px] mx-2 my-auto">
-                <Avatar label="Noun 97" src={records[0].avatar} />
+                <Avatar label="Noun 97" src={selectedProfile.avatar} />
               </div>
               <div className="grow my-auto">
-                <RecordItem keyLabel="Avatar" value={records[0].avatar}>
-                  {records[0].avatar.substring(0, 30) + '...'}
+                <RecordItem keyLabel="Avatar" value={selectedProfile.avatar}>
+                  {selectedProfile.avatar.substring(0, 30) + '...'}
                 </RecordItem>
               </div>
             </div>
             {/* <RecordItem
               keyLabel="Registrion Time"
-              value={records[0].registeredAt}
+              value={selectedProfile.registeredAt}
             >
-              {records[0].registeredAt}
+              {selectedProfile.registeredAt}
             </RecordItem> */}
-            {/* <RecordItem keyLabel="node" value={records[0].id}>
-              {records[0].id}
+            {/* <RecordItem keyLabel="node" value={selectedProfile.id}>
+              {selectedProfile.id}
             </RecordItem> */}
 
             <UpdateRecords
-              records={records}
-              setPonderCacheKey={setPonderCacheKey}
+              selectedProfile={selectedProfile}
+              refetchPonder={ponder.refetch}
             />
           </>
         )}
@@ -118,11 +118,11 @@ function DisplayRecords() {
 }
 
 function UpdateRecords({
-  records,
-  setPonderCacheKey,
+  selectedProfile,
+  refetchPonder,
 }: {
-  records: Profile[] | undefined
-  setPonderCacheKey: (value: string) => void
+  selectedProfile: Profile | undefined
+  refetchPonder: () => void
 }) {
   const { address } = useAccount()
   const [isValidAddress, setIsValidAddress] = useState(false)
@@ -139,7 +139,7 @@ function UpdateRecords({
   //   functionName: 'updateRecords',
   //   enabled: isValid,
   //   args: records
-  //     ? [BigInt(records[0].id), ethAddress as Address, avatar]
+  //     ? [BigInt(selectedProfile.id), ethAddress as Address, avatar]
   //     : undefined,
   // })
 
@@ -150,7 +150,9 @@ function UpdateRecords({
     ...l2Registry,
     functionName: 'setAddr',
     enabled: isValidAddress,
-    args: records ? [BigInt(records[0].id), ethAddress as Address] : undefined,
+    args: selectedProfile
+      ? [BigInt(selectedProfile.id), ethAddress as Address]
+      : undefined,
   })
 
   const setAddrTx = useContractWrite(prepareSetAddr.config)
@@ -160,7 +162,7 @@ function UpdateRecords({
     ...l2Registry,
     functionName: 'updateAvatar',
     enabled: isValidAvatar,
-    args: records ? [BigInt(records[0].id), avatar] : undefined,
+    args: selectedProfile ? [BigInt(selectedProfile.id), avatar] : undefined,
   })
 
   const updateAvatarTx = useContractWrite(prepareUpdateAvatar.config)
@@ -188,14 +190,14 @@ function UpdateRecords({
   }, [avatar])
 
   useEffect(() => {
-    if (updateAvatarTx.isSuccess || setAddrReceipt.isSuccess) {
+    if (updateAvatarReceipt.isSuccess || setAddrReceipt.isSuccess) {
       // wait 1 second for ponder to index the transaction
       setTimeout(() => {
-        setPonderCacheKey(updateAvatarReceipt.data?.transactionHash as string)
+        refetchPonder()
       }, 1000)
     }
-  }, [updateAvatarTx.isSuccess, setAddrReceipt.isSuccess])
-  console.log(updateAvatarReceipt.isSuccess)
+  }, [updateAvatarReceipt.isSuccess, setAddrReceipt.isSuccess])
+
   return (
     <div className="flex  flex-col min-w-[360px] gap-6">
       <Input

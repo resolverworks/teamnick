@@ -1,10 +1,8 @@
 'use client'
 
-import { ConnectButton } from '@rainbow-me/rainbowkit'
 import { encodePacked, keccak256 } from 'viem'
 import {
   useAccount,
-  useBlockNumber,
   useContractRead,
   useContractWrite,
   usePrepareContractWrite,
@@ -37,7 +35,6 @@ export default function Home() {
   const debouncedName = useDebounce(name, 500)
   const [recentName, setRecentName] = useState('')
   const errorMessage = debouncedName ? validateInput(debouncedName) : ''
-  const [ponderCacheKey, setPonderCacheKey] = useState<string | undefined>()
 
   const prepare = usePrepareContractWrite({
     ...l2Registry,
@@ -69,16 +66,14 @@ export default function Home() {
 
   const totalSupply = supply ? Number(supply).toString() : 'Unavailable'
 
-  const ponder = usePonder({
-    key: ponderCacheKey,
-  })
+  const ponder = usePonder()
 
   useEffect(() => {
     if (receipt.isSuccess) {
       // wait 1 second for ponder to index the transaction
       setTimeout(() => {
         refetchSupply()
-        setPonderCacheKey(receipt?.data?.transactionHash)
+        ponder.refetch()
       }, 1000)
     }
   }, [receipt.isSuccess])

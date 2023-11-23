@@ -1,8 +1,11 @@
 import { Profile, PonderResponse, ponderUrl } from '@/lib/ponder'
+import { useState } from 'react'
 import { useFetch } from 'usehooks-ts'
 
 // Key is used to trigger a re-fetch
-export function usePonder({ key }: { key?: string | undefined }) {
+export function usePonder() {
+  const [cacheKey, setCacheKey] = useState('')
+
   const graphQlQuery = `
     query {
       profiles (orderBy: "registeredAt", orderDirection: "desc") {
@@ -18,7 +21,7 @@ export function usePonder({ key }: { key?: string | undefined }) {
   `
 
   const { data, error } = useFetch<PonderResponse<{ profiles: Profile[] }>>(
-    ponderUrl + '?key=' + (key || ''),
+    ponderUrl + '?key=' + cacheKey,
     {
       method: 'POST',
       headers: {
@@ -28,9 +31,14 @@ export function usePonder({ key }: { key?: string | undefined }) {
     }
   )
 
+  function refetch() {
+    setCacheKey(Date.now().toString())
+  }
+
   return {
     profiles: data?.data?.profiles,
     error,
     isLoading: !data && !error,
+    refetch,
   }
 }
