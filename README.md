@@ -7,7 +7,20 @@
 3. yarn compile
 4. yarn deploy:l2-goerli-registry
 5. with new contract replace it
-   a. l2-registry.ts
-   b. db.ts
-   c. ponder.config.ts
+
+- l2-registry.ts
+- db.ts
+- ponder.config.ts
+
 6. update ponder starBlock
+
+### Tech Used
+
+[Ponder](https://ponder.sh/)
+[Next.js](https://nextjs.org/)
+[tailwindcss](https://tailwindcss.com/)
+
+### Deployment
+
+[vercel](https://vercel.com/)
+[railway](https://railway.app/)
