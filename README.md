@@ -27,3 +27,12 @@
 [vercel](https://vercel.com/)
 
 [railway](https://railway.app/)
+
+### API Keys Needed
+
+etherscan api key for auto-verifying contracts
+
+###.env
+DEPLOYER_KEY=""
+ETHERSCAN_API_KEY=""
+BASESCAN_API_KEY=""
