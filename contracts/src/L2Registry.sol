@@ -113,7 +113,7 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
         address to,
         uint256 tokenId,
         bytes memory _data
-    ) public override(ERC721) {
+    ) public virtual override(ERC721) {
         setAddr(tokenId, to);
         super.safeTransferFrom(from, to, tokenId, _data);
     }
