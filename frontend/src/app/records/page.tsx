@@ -129,22 +129,9 @@ function UpdateRecords({
   const [isValidAvatar, setIsValidAvatar] = useState(false)
   const [ethAddress, setEthAddress] = useState('')
   const [avatar, setAvatar] = useState('')
-  const [AvatarMsg, setAvatarMsg] = useState('')
   const isValidEthAddress = (address: string) => {
     return /^0x[a-fA-F0-9]{40}$/.test(address)
   }
-
-  // const prepare = usePrepareContractWrite({
-  //   ...l2Registry,
-  //   functionName: 'updateRecords',
-  //   enabled: isValid,
-  //   args: records
-  //     ? [BigInt(selectedProfile.id), ethAddress as Address, avatar]
-  //     : undefined,
-  // })
-
-  // const tx = useContractWrite(prepare.config)
-  // const receipt = useWaitForTransaction(tx.data)
 
   const prepareSetAddr = usePrepareContractWrite({
     ...l2Registry,
@@ -177,14 +164,11 @@ function UpdateRecords({
   }, [ethAddress])
 
   useEffect(() => {
-    if (/\.(jpg|jpeg|png)$/.test(avatar) && avatar !== '') {
+    if (avatar !== '') {
       setIsValidAvatar(true)
-      setAvatarMsg('')
     } else if (avatar === '') {
       setIsValidAvatar(false)
-      setAvatarMsg('')
     } else {
-      setAvatarMsg('Avatar must end in jpg, jpeg, or png')
       setIsValidAvatar(false)
     }
   }, [avatar])
@@ -226,10 +210,10 @@ function UpdateRecords({
         value={avatar}
         onChange={(e) => setAvatar(e.target.value)}
       />
-      <div className="min-h-[20px] text-red-400 mx-auto">
+      <div className="min-h-[20px] mx-auto">
         {' '}
-        {AvatarMsg} {updateAvatarReceipt.isLoading && <Spinner />}
-        {updateAvatarReceipt.isSuccess && 'Avatar updated successfully'}
+        {updateAvatarReceipt.isLoading && <Spinner />}
+        {updateAvatarReceipt.isSuccess && 'Avatar updated successfully!'}
       </div>
       <div className="pb-4  mx-auto">
         <Button

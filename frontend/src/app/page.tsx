@@ -171,9 +171,6 @@ export default function Home() {
       <div className="py-10">
         <SubNameTable names={ponder.profiles} />
       </div>
-      {/* <div className="max-w-xl  mx-auto">
-        <UpdateRecords names={ponder.data?.data.names} />
-      </div> */}
     </main>
   )
 }
