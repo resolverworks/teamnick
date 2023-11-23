@@ -17,10 +17,13 @@
 ### Tech Used
 
 [Ponder](https://ponder.sh/)
+
 [Next.js](https://nextjs.org/)
+
 [tailwindcss](https://tailwindcss.com/)
 
 ### Deployment
 
 [vercel](https://vercel.com/)
+
 [railway](https://railway.app/)
