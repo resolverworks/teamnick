@@ -175,6 +175,12 @@ function UpdateRecords({
 
   useEffect(() => {
     if (updateAvatarReceipt.isSuccess || setAddrReceipt.isSuccess) {
+      if (updateAvatarReceipt.isSuccess) {
+        setAvatar('')
+      } else if (setAddrReceipt.isSuccess) {
+        setEthAddress('')
+      }
+
       // wait 1 second for ponder to index the transaction
       setTimeout(() => {
         refetchPonder()
@@ -190,10 +196,10 @@ function UpdateRecords({
         value={ethAddress}
         onChange={(e) => setEthAddress(e.target.value)}
       />
-      <div className=" text-center">
-        {setAddrReceipt.isSuccess && (
-          <div>Eth address updated successfully!</div>
-        )}
+      <div className="min-h-[20px] mx-auto">
+        {' '}
+        {setAddrReceipt.isLoading && <Spinner />}
+        {setAddrReceipt.isSuccess && 'Eth address updated successfully'}
       </div>
       <div className="mx-auto">
         <Button

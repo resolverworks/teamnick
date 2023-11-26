@@ -57,7 +57,7 @@ export default function Home() {
     if (receipt.isSuccess || receipt.isError) {
       setName('') // Clear the input field when transaction is completed
     }
-  }, [receipt])
+  }, [receipt.isSuccess, receipt.isError])
 
   const { data: supply, refetch: refetchSupply } = useContractRead({
     ...l2Registry,
