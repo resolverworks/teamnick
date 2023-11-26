@@ -15,9 +15,9 @@ export const config: Config = {
     {
       name: "TeamNick",
       network: "base_goerli",
-      address: "0xbf69e114891d1fd029d0fd632144849db98f4dc8",
+      address: "0xe9175bbb042d4579eac537f547bcecd2363f68c2",
       abi: "./abis/TeamNick.json",
-      startBlock: 12886628,
+      startBlock: 12887197,
     },
   ],
 };
