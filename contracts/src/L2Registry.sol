@@ -108,21 +108,6 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
     //                 OVERRIDES                  //
     ////////////////////////////////////////////////
 
-    function _safeTransfer(
-        address from,
-        address to,
-        uint256 tokenId,
-        bytes memory data
-    ) internal virtual override {
-        // Change the resolved ETH address on transfers
-        // We skip this step during mint, because register() already takes care of it
-        if (from != address(0)) {
-            setAddr(tokenId, to);
-        }
-
-        super._safeTransfer(from, to, tokenId, data);
-    }
-
     ////////////////////////////////////////////////
     //               READ FUNCTIONS               //
     ////////////////////////////////////////////////
