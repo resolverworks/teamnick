@@ -4,9 +4,40 @@ Install dependencies
 
 forge install 
 
-Test
+Test script is in test/TeamNick.t.sol
 
 forge test -vvvv
+
+Deploy script is in 
+script/TeamNick.s.sol
+
+export OWNER=0x000000000000000000000000000000000000007B
+export BASEURI=http://google.com
+
+forge script script/TeamNick.s.sol
+
+[⠆] Compiling...
+No files changed, compilation skipped
+Script ran successfully.
+Gas used: 1693206
+
+== Logs ==
+  Deployed to:  0x5615dEB798BB3E4dFa0139dFa1b3D433Cc23b72f
+
+
+
+If deploying to mainnet you need to export RPC_URL and a privatekey
+
+export RPC_URL=yourrpcpath
+export PRIVKEY=yourprivkey
+
+forge script script/TeamNick.s.sol --rpc-url $RPC_URL --private-key $PRIVKEY --broadcast -vv
+
+
+
+
+
+
 
 ## Foundry
 

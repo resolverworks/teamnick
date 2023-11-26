@@ -1608,10 +1608,10 @@
         }
       }
     },
-    "script/Counter.s.sol": {
-      "lastModificationDate": 1701023268387,
-      "contentHash": "7539680fbd3ad49c6632713cc2bb6bf6",
-      "sourceName": "script/Counter.s.sol",
+    "script/TeamNick.s.sol": {
+      "lastModificationDate": 1701024240579,
+      "contentHash": "5a86417a03fb757b204c76e77155b318",
+      "sourceName": "script/TeamNick.s.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -1657,53 +1657,27 @@
         "lib/forge-std/src/interfaces/IMulticall3.sol",
         "lib/forge-std/src/mocks/MockERC20.sol",
         "lib/forge-std/src/mocks/MockERC721.sol",
-        "lib/forge-std/src/safeconsole.sol"
+        "lib/forge-std/src/safeconsole.sol",
+        "lib/openzeppelin-contracts/contracts/access/Ownable.sol",
+        "lib/openzeppelin-contracts/contracts/interfaces/draft-IERC6093.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Pausable.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Metadata.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Context.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Pausable.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Strings.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
+        "lib/openzeppelin-contracts/contracts/utils/math/Math.sol",
+        "lib/openzeppelin-contracts/contracts/utils/math/SignedMath.sol",
+        "src/L2Registry.sol"
       ],
       "versionRequirement": "^0.8.13",
       "artifacts": {
         "CounterScript": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "Counter.s.sol/CounterScript.json"
-        }
-      }
-    },
-    "src/Counter.sol": {
-      "lastModificationDate": 1701023268387,
-      "contentHash": "ae6c800a2b4c57768024d6e9423d39e8",
-      "sourceName": "src/Counter.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "useLiteralContent": false,
-            "bytecodeHash": "ipfs",
-            "appendCBOR": true
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ]
-            }
-          },
-          "evmVersion": "paris",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": "^0.8.13",
-      "artifacts": {
-        "Counter": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "Counter.sol/Counter.json"
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "TeamNick.s.sol/CounterScript.json"
         }
       }
     },
@@ -1981,10 +1955,10 @@
         }
       }
     },
-    "test/Counter.t.sol": {
-      "lastModificationDate": 1701023333377,
-      "contentHash": "4890392afb5dc3ba3df9fc744de048d5",
-      "sourceName": "test/Counter.t.sol",
+    "test/TeamNick.t.sol": {
+      "lastModificationDate": 1701023962866,
+      "contentHash": "61ff59e596ef62637b8b7718b3490eb6",
+      "sourceName": "test/TeamNick.t.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -2054,7 +2028,7 @@
       "versionRequirement": "^0.8.13",
       "artifacts": {
         "TeamNickTest": {
-          "0.8.21+commit.d9974bed.Darwin.appleclang": "Counter.t.sol/TeamNickTest.json"
+          "0.8.21+commit.d9974bed.Darwin.appleclang": "TeamNick.t.sol/TeamNickTest.json"
         }
       }
     }
