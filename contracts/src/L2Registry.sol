@@ -187,9 +187,7 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
         uint256 tokenId,
         address auth
     ) internal override(ERC721, ERC721Pausable) returns (address) {
-        address from = _ownerOf(tokenId);
-
-        if (from != address(0)) {
+        if (recordExists(tokenId)) {
             // Additional: Update address for the tokenId (if needed)
             setAddr(tokenId, to); // or any other appropriate logic
         }
