@@ -34,7 +34,14 @@ export default function Home() {
   const [name, setName] = useState('')
   const debouncedName = useDebounce(name, 500)
   const [recentName, setRecentName] = useState('')
-  const errorMessage = debouncedName ? validateInput(debouncedName) : ''
+
+  const ponder = usePonder()
+  const isDupe = ponder.profiles?.some((profile) => profile.label === name)
+  const errorMessage = isDupe
+    ? 'Name Exists'
+    : debouncedName
+      ? validateInput(debouncedName)
+      : ''
 
   const prepare = usePrepareContractWrite({
     ...l2Registry,
@@ -65,8 +72,6 @@ export default function Home() {
   })
 
   const totalSupply = supply ? Number(supply).toString() : 'Unavailable'
-
-  const ponder = usePonder()
 
   useEffect(() => {
     if (receipt.isSuccess) {
@@ -112,7 +117,7 @@ export default function Home() {
           onChange={(e) => setName(e.target.value)}
         />
         <div
-          className={`text-red-300 text-center ${
+          className={`text-red-300 text-center pt-1 ${
             errorMessage ? 'visible' : 'invisible'
           }`}
         >
