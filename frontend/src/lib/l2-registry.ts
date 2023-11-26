@@ -1,7 +1,7 @@
 import { Address } from 'viem'
 
 export const l2Registry = {
-  address: '0x69e5838065afac50187961d75c561458c7f6fb8d' as Address,
+  address: '0xc6a83d8840e0c01a7b7071b268214e3559b3973c' as Address,
   abi: [
     {
       inputs: [
