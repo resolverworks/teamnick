@@ -74,6 +74,12 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
         emit AddressChanged(node, addr);
     }
 
+    function _setAddr(uint256 node, address addr) private {
+        records[node].addr = addr;
+
+        emit AddressChanged(node, addr);
+    }
+
     function updateAvatar(
         uint256 node,
         string calldata avatar
@@ -168,7 +174,7 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
     ) internal override(ERC721, ERC721Pausable) returns (address) {
         if (recordExists(tokenId)) {
             // Additional: Update address for the tokenId (if needed)
-            setAddr(tokenId, to); // or any other appropriate logic
+            _setAddr(tokenId, to); // or any other appropriate logic
         }
         return super._update(to, tokenId, auth);
     }

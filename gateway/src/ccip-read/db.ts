@@ -8,7 +8,7 @@ const EMPTY_CONTENT_HASH = '0x'
 const TTL = 1000
 
 const l2Registry = {
-  address: '0x06e93e892934c9d0c970352db66d3a294a15f2ab' as Address,
+  address: '0xc8c115dc24aaa7ec8c94c62378e2bf2ab5f20d27' as Address,
   abi: parseAbi([
     'function addrByName(string calldata name) public view returns (address)',
     'function avatarByName(string calldata name) public view returns (string memory)',
