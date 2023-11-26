@@ -1,38 +1,66 @@
-# teamnick
+## Foundry
 
-### Instructions To Deploy (WIP)
+**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
 
-1. cd contracts/
-2. yarn
-3. yarn compile
-4. yarn deploy:l2-goerli-registry
-5. with new contract replace it
+Foundry consists of:
 
-- l2-registry.ts
-- db.ts
-- ponder.config.ts
+-   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
+-   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
+-   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
+-   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
 
-6. update ponder starBlock
+## Documentation
 
-### Tech Used
+https://book.getfoundry.sh/
 
-[Ponder](https://ponder.sh/)
+## Usage
 
-[Next.js](https://nextjs.org/)
+### Build
 
-[tailwindcss](https://tailwindcss.com/)
+```shell
+$ forge build
+```
 
-### Deployment
+### Test
 
-[vercel](https://vercel.com/)
+```shell
+$ forge test
+```
 
-[railway](https://railway.app/)
+### Format
 
-### API Keys Needed
+```shell
+$ forge fmt
+```
 
-etherscan api key for auto-verifying contracts
+### Gas Snapshots
 
-###.env
-DEPLOYER_KEY=""
-ETHERSCAN_API_KEY=""
-BASESCAN_API_KEY=""
+```shell
+$ forge snapshot
+```
+
+### Anvil
+
+```shell
+$ anvil
+```
+
+### Deploy
+
+```shell
+$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
+```
+
+### Cast
+
+```shell
+$ cast <subcommand>
+```
+
+### Help
+
+```shell
+$ forge --help
+$ anvil --help
+$ cast --help
+```
