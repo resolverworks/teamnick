@@ -38,7 +38,7 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
 
     // Permits modifications only by the owner of the specified node.
     modifier authorised(uint256 node) {
-        if (ownerOf(node) != msg.sender) {
+        if (_ownerOf(node) != msg.sender) {
             revert Unauthorized();
         }
 
@@ -165,13 +165,7 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
     }
 
     function recordExists(uint256 node) public view returns (bool) {
-        // ownerOf(node) will throw if the node does not exist
-        // In that case, we catch the error and return false
-        try this.ownerOf(node) {
-            return true;
-        } catch {
-            return false;
-        }
+        return _ownerOf(node) != address(0);
     }
 
     ////////////////////////////////////////////////
