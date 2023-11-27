@@ -4,20 +4,20 @@ import { http } from "viem";
 export const config: Config = {
   networks: [
     {
-      name: "base_goerli",
-      chainId: 84531,
+      name: "base",
+      chainId: 8453,
       transport: http(
-        process.env.PONDER_RPC_URL_84531 || "https://goerli.base.org"
+        process.env.PONDER_RPC_URL_8453 || "https://mainnet.base.org"
       ),
     },
   ],
   contracts: [
     {
       name: "TeamNick",
-      network: "base_goerli",
-      address: "0x5886a303c6f327d6b7728ae2296d7f13d9ba983d",
+      network: "base",
+      address: "0x7C6EfCb602BC88794390A0d74c75ad2f1249A17f",
       abi: "./abis/TeamNick.json",
-      startBlock: 12925880,
+      startBlock: 7128431,
     },
   ],
 };

@@ -5,7 +5,7 @@ import { Buffer } from 'buffer'
 import { BytesLike, ethers } from 'ethers'
 import { Result, hexConcat } from 'ethers/lib/utils'
 import { Client, createPublicClient, http } from 'viem'
-import { baseGoerli } from 'viem/chains'
+import { base } from 'viem/chains'
 
 import { Database, DatabaseResult } from './db'
 
@@ -76,7 +76,7 @@ async function query(
   }
 
   const publicClient = createPublicClient({
-    chain: baseGoerli,
+    chain: base,
     transport: http(),
   })
 
