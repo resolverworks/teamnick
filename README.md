@@ -30,9 +30,6 @@
 
 ### API Keys Needed
 
-etherscan api key for auto-verifying contracts
-
-###.env
 DEPLOYER_KEY=""
 
 ETHERSCAN_API_KEY=""
