@@ -94,16 +94,17 @@ export default function Home() {
           Team Nick's Mint Count: {totalSupply}
         </Typography>
         <Typography className="text-center text-gray-400 max-w-12">
-          Register a free ENS Subname on Base. Tradable on{' '}
+          Register a free ENS Subname on Base.
+          {/*  Tradable on{' '}
           <a
-            href="https://opensea.io/"
+            href="https://opensea.io/collection/teamnick"
             className="underline hover:text-blue-600"
             target="_blank"
             rel="noopener noreferrer"
           >
             OpenSea
           </a>
-          !
+          ! */}
         </Typography>
       </div>
 
