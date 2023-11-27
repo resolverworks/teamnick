@@ -21,6 +21,7 @@ export const ponderUrl = 'https://teamnick-production.up.railway.app'
 export async function getNameByTokenId(id: string) {
   const res = await fetch(ponderUrl, {
     method: 'POST',
+    cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json',
     },
