@@ -69,9 +69,7 @@ contract TeamNick is ERC721, ERC721Pausable, Ownable {
     }
 
     function setAddr(uint256 node, address addr) public authorised(node) {
-        records[node].addr = addr;
-
-        emit AddressChanged(node, addr);
+        _setAddr(node, addr);
     }
 
     function _setAddr(uint256 node, address addr) private {
