@@ -8,6 +8,7 @@ import {
   usePrepareContractWrite,
   useWaitForTransaction,
 } from 'wagmi'
+import { normalize } from 'viem/ens'
 import { useDebounce } from 'usehooks-ts'
 import { Button, Input, Typography } from '@ensdomains/thorin'
 import React, { useState, useEffect } from 'react'
@@ -34,6 +35,7 @@ export default function Home() {
   const [name, setName] = useState('')
   const debouncedName = useDebounce(name, 500)
   const [recentName, setRecentName] = useState('')
+  const [normalizationError, setNormalizationError] = useState('')
 
   const ponder = usePonder()
   const isDupe = ponder.profiles?.some((profile) => profile.label === name)
@@ -115,14 +117,25 @@ export default function Home() {
           placeholder="thebest"
           suffix=".teamnick.eth"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            try {
+              const normalizedValue = normalize(e.target.value)
+              setName(normalizedValue)
+              setNormalizationError('') // Clear any previous error
+            } catch (error) {
+              console.error('Normalization failed:', error)
+              setNormalizationError(
+                'Normalization failed. Please try a different name.'
+              )
+            }
+          }}
         />
         <div
           className={`text-red-300 text-center pt-1 ${
-            errorMessage ? 'visible' : 'invisible'
+            errorMessage || normalizationError ? 'visible' : 'invisible'
           }`}
         >
-          {errorMessage || 'Placeholder'}
+          {normalizationError || errorMessage || 'Placeholder'}
         </div>
       </div>
       <div className="pb-4  mx-auto">
