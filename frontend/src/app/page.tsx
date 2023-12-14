@@ -194,6 +194,17 @@ export default function Home() {
 }
 
 function SubNameTable({ names }: { names: Profile[] | undefined }) {
+  const namesPerPage = 25
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const indexOfLastName = currentPage * namesPerPage
+  const indexOfFirstName = indexOfLastName - namesPerPage
+  const currentNames = names?.slice(indexOfFirstName, indexOfLastName)
+
+  const totalPages = names ? Math.ceil(names.length / namesPerPage) : 0
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
+
   return (
     <>
       <div className="max-w-xl grow my-0 mx-auto bg-white rounded-lg p-5 relative min-w-[360px]">
@@ -211,7 +222,7 @@ function SubNameTable({ names }: { names: Profile[] | undefined }) {
             </tr>
           </thead>
           <tbody>
-            {names?.map((name, index) => (
+            {currentNames?.map((name, index) => (
               <tr
                 key={name.id}
                 className={`${
@@ -245,6 +256,22 @@ function SubNameTable({ names }: { names: Profile[] | undefined }) {
             ))}
           </tbody>
         </table>
+        {/* Pagination Controls */}
+        <div className="flex justify-center mt-4">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => paginate(index + 1)}
+              className={`mx-1 px-3 py-1 border rounded ${
+                currentPage === index + 1
+                  ? 'bg-blue-500 text-white'
+                  : 'bg-white'
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
       </div>
     </>
   )
