@@ -258,19 +258,58 @@ function SubNameTable({ names }: { names: Profile[] | undefined }) {
         </table>
         {/* Pagination Controls */}
         <div className="flex justify-center mt-4">
-          {Array.from({ length: totalPages }, (_, index) => (
+          {/* First Page */}
+          {currentPage > 1 && (
             <button
-              key={index + 1}
-              onClick={() => paginate(index + 1)}
-              className={`mx-1 px-3 py-1 border rounded ${
-                currentPage === index + 1
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white'
-              }`}
+              onClick={() => paginate(1)}
+              className="mx-1 px-3 py-1 border rounded bg-white"
             >
-              {index + 1}
+              1
             </button>
-          ))}
+          )}
+
+          {/* Ellipsis for Previous Pages */}
+          {currentPage > 3 && <span className="mx-1 px-3 py-1">...</span>}
+
+          {/* Previous Page */}
+          {currentPage > 2 && (
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              className="mx-1 px-3 py-1 border rounded bg-white"
+            >
+              {currentPage - 1}
+            </button>
+          )}
+
+          {/* Current Page */}
+          <button className="mx-1 px-3 py-1 border rounded bg-blue-500 text-white">
+            {currentPage}
+          </button>
+
+          {/* Next Page */}
+          {currentPage < totalPages - 1 && (
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              className="mx-1 px-3 py-1 border rounded bg-white"
+            >
+              {currentPage + 1}
+            </button>
+          )}
+
+          {/* Ellipsis for Next Pages */}
+          {currentPage < totalPages - 2 && (
+            <span className="mx-1 px-3 py-1">...</span>
+          )}
+
+          {/* Last Page */}
+          {currentPage < totalPages && (
+            <button
+              onClick={() => paginate(totalPages)}
+              className="mx-1 px-3 py-1 border rounded bg-white"
+            >
+              {totalPages}
+            </button>
+          )}
         </div>
       </div>
     </>
