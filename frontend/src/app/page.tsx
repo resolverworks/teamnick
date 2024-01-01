@@ -10,11 +10,10 @@ import {
 } from 'wagmi'
 import { normalize } from 'viem/ens'
 import { useDebounce } from 'usehooks-ts'
-import { Button, Input, Typography } from '@ensdomains/thorin'
-import React, { useState, useEffect } from 'react'
+import { Button, Input, Typography, Skeleton } from '@ensdomains/thorin'
+import React, { useState, useEffect, use } from 'react'
 
 import { l2Registry } from '@/lib/l2-registry'
-import { Profile } from '@/lib/ponder'
 import { usePonder } from '@/hooks/usePonder'
 import NavBar from './components/NavBar'
 
@@ -36,19 +35,20 @@ export default function Home() {
   const debouncedName = useDebounce(name, 500)
   const [recentName, setRecentName] = useState('')
   const [normalizationError, setNormalizationError] = useState('')
+  const [page, setPage] = useState(1)
 
   const ponder = usePonder()
-  const isDupe = ponder.profiles?.some((profile) => profile.label === name)
-  const errorMessage = isDupe
-    ? 'Name Exists'
-    : debouncedName
-      ? validateInput(debouncedName)
-      : ''
 
-  const prepare = usePrepareContractWrite({
+  const { data: isAvailable } = useContractRead({
+    ...l2Registry,
+    functionName: 'available',
+    args: [debouncedName],
+  })
+
+  const { config, isError } = usePrepareContractWrite({
     ...l2Registry,
     functionName: 'register',
-    enabled: validateInput(debouncedName) === '',
+    enabled: validateInput(debouncedName) === '' && isAvailable,
     args: address
       ? [
           debouncedName,
@@ -59,7 +59,13 @@ export default function Home() {
       : undefined,
   })
 
-  const tx = useContractWrite(prepare.config)
+  const errorMessage = !isAvailable
+    ? 'Name Exists'
+    : debouncedName
+      ? validateInput(debouncedName)
+      : ''
+
+  const tx = useContractWrite(config)
   const receipt = useWaitForTransaction(tx.data) // Define receipt here
 
   useEffect(() => {
@@ -74,6 +80,7 @@ export default function Home() {
   })
 
   const totalSupply = supply ? Number(supply).toString() : 'Unavailable'
+  const nameCount = supply ? parseInt(supply.toString()) : 0
 
   useEffect(() => {
     if (receipt.isSuccess) {
@@ -81,6 +88,7 @@ export default function Home() {
       setTimeout(() => {
         refetchSupply()
         ponder.refetch()
+        setPage(1)
       }, 1000)
     }
   }, [receipt.isSuccess])
@@ -131,7 +139,7 @@ export default function Home() {
         />
         <div
           className={`text-red-300 text-center pt-1 ${
-            errorMessage || normalizationError ? 'visible' : 'invisible'
+            normalizationError || isError ? 'visible' : 'invisible'
           }`}
         >
           {normalizationError || errorMessage || 'Placeholder'}
@@ -140,11 +148,7 @@ export default function Home() {
       <div className="pb-4  mx-auto">
         <Button
           disabled={
-            !address ||
-            !name ||
-            !!errorMessage ||
-            !tx.write ||
-            !!prepare.isError
+            !address || !name || !!errorMessage || !tx.write || !!isError
           }
           onClick={() => {
             setRecentName(name)
@@ -187,23 +191,44 @@ export default function Home() {
         })()}
       </div>
       <div className="py-10">
-        <SubNameTable names={ponder.profiles} />
+        <SubNameTable nameCount={nameCount} page={page} />
       </div>
     </main>
   )
 }
 
-function SubNameTable({ names }: { names: Profile[] | undefined }) {
+function SubNameTable({
+  nameCount,
+  page,
+}: {
+  nameCount: number
+  page: number
+}) {
   const namesPerPage = 25
-  const [currentPage, setCurrentPage] = useState(1)
+  const [currentPage, setCurrentPage] = useState(page)
+  const ponder = usePonder((currentPage - 1) * 25)
 
-  const indexOfLastName = currentPage * namesPerPage
-  const indexOfFirstName = indexOfLastName - namesPerPage
-  const currentNames = names?.slice(indexOfFirstName, indexOfLastName)
+  useEffect(() => {
+    ponder.refetch()
+  }, [currentPage])
+  //const currentNames = ponder.profiles
 
-  const totalPages = names ? Math.ceil(names.length / namesPerPage) : 0
+  const totalPages = Math.ceil(nameCount / namesPerPage)
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
+
+  const currentNames =
+    ponder.profiles === undefined
+      ? Array.from({ length: namesPerPage }, (_, index) => ({
+          id: `dummy-${index}`,
+          name: `Dummy Name ${index + 1}`,
+          label: `Dummy Label ${index + 1}`,
+          address: '0x0000000000000000000000000000000000000000',
+          owner: '0x0000000000000000000000000000000000000000',
+        }))
+      : ponder.profiles
+
+  const loading = ponder.profiles === undefined
 
   return (
     <>
@@ -230,27 +255,39 @@ function SubNameTable({ names }: { names: Profile[] | undefined }) {
                 } border-b border-gray-200`}
               >
                 <td className="flex pl-3 py-4">
-                  <a
-                    href={`https://app.ens.domains/${name.name}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className=" hover:text-blue-800 "
-                  >
-                    {name.label}
-                    <span className="opacity-50">.teamnick.eth</span>
-                  </a>
+                  {loading ? (
+                    <Skeleton loading={true}>123456789</Skeleton>
+                  ) : (
+                    <a
+                      href={`https://app.ens.domains/${name.name}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className=" hover:text-blue-800 "
+                    >
+                      {name.label}
+                      <span className="opacity-50">.teamnick.eth</span>
+                    </a>
+                  )}
                 </td>
                 <td className="text-right pr-4 py-2 ">
-                  <FormattedAddressLink
-                    address={name.address}
-                    explorerUrl="https://basescan.org/address"
-                  />
+                  {loading ? (
+                    <Skeleton loading={true}>123456789</Skeleton>
+                  ) : (
+                    <FormattedAddressLink
+                      address={name.address}
+                      explorerUrl="https://basescan.org/address"
+                    />
+                  )}
                 </td>
                 <td className="text-right pr-4 py-2">
-                  <FormattedAddressLink
-                    address={name.owner}
-                    explorerUrl="https://basescan.org/address"
-                  />
+                  {loading ? (
+                    <Skeleton loading={true}>123456789</Skeleton>
+                  ) : (
+                    <FormattedAddressLink
+                      address={name.owner}
+                      explorerUrl="https://basescan.org/address"
+                    />
+                  )}
                 </td>
               </tr>
             ))}
@@ -342,8 +379,4 @@ const FormattedAddressLink = ({
       {formattedAddress.toLowerCase()}
     </a>
   )
-}
-
-function hashLabel(label: string) {
-  return BigInt(keccak256(encodePacked(['string'], [label])))
 }
