@@ -22,6 +22,7 @@ import {
 import { Profile } from '@/lib/ponder'
 import NavBar from '../components/NavBar'
 import { l2Registry } from '@/lib/l2-registry'
+import { start } from 'repl'
 
 export default function Records() {
   return (
@@ -48,7 +49,7 @@ function DisplayRecords() {
   const [selectedName, setSelectedName] = useState<string | null>(null)
   const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null)
 
-  const ponder = usePonder()
+  const ponder = usePonder(0, address)
 
   const filteredNames =
     ponder.profiles

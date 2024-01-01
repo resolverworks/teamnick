@@ -3,13 +3,13 @@ import { useState } from 'react'
 import { useFetch } from 'usehooks-ts'
 
 // Key is used to trigger a re-fetch
-export function usePonder(start: number = 0) {
+export function usePonder(start: number = 0, owner?: string) {
   const [skip, setSkip] = useState(start)
   const [cacheKey, setCacheKey] = useState('')
 
   const graphQlQuery = `
-  query ProfilesQuery($first: Int!, $skip: Int!) {
-    profiles (orderBy: "registeredAt", orderDirection: "desc", first: $first, skip: $skip) {
+  query ProfilesQuery($first: Int!, $skip: Int!, $owner: String) {
+    profiles (orderBy: "registeredAt", orderDirection: "desc", first: $first, skip: $skip, where: {owner: $owner}) {
       id
       name
       label
@@ -24,6 +24,7 @@ export function usePonder(start: number = 0) {
   const variables = {
     first: 25, // set the value of 'first' here
     skip: start,
+    owner: owner,
   }
 
   const { data, error } = useFetch<PonderResponse<{ profiles: Profile[] }>>(
