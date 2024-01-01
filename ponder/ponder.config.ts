@@ -7,7 +7,7 @@ export const config: Config = {
       name: "base",
       chainId: 8453,
       transport: http(
-        process.env.PONDER_RPC_URL_8453 || "https://mainnet.base.org"
+        process.env.PONDER_RPC_URL_8453 || "https://base.llamarpc.com"
       ),
     },
   ],
