@@ -8,7 +8,6 @@ import {
   useWaitForTransaction,
 } from 'wagmi'
 import React, { useState, useEffect } from 'react'
-import { usePonder } from '@/hooks/usePonder'
 import {
   Avatar,
   Button,
@@ -19,7 +18,7 @@ import {
   RecordItem,
   Spinner,
 } from '@ensdomains/thorin'
-import { Profile2 } from '@/lib/ponder'
+import { NamestoneProfile } from '@/lib/ponder'
 import NavBar from '../components/NavBar'
 import { l2Registry } from '@/lib/l2-registry'
 import { start } from 'repl'
@@ -47,7 +46,8 @@ export default function Records() {
 function DisplayRecords() {
   const { address } = useAccount()
   const [selectedName, setSelectedName] = useState<string | null>(null)
-  const [selectedProfile, setSelectedProfile] = useState<Profile2 | null>(null)
+  const [selectedProfile, setSelectedProfile] =
+    useState<NamestoneProfile | null>(null)
   const [nameList, setNameList] = useState<Profile[]>([])
 
   async function fetchUserRecords() {
@@ -151,7 +151,7 @@ function UpdateRecords({
   selectedProfile,
   refetchNames,
 }: {
-  selectedProfile: Profile2 | undefined
+  selectedProfile: NamestoneProfile | undefined
   refetchNames: () => void
 }) {
   const { address } = useAccount()

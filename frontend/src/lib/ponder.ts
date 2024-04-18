@@ -15,7 +15,7 @@ export type Profile = {
   address: string
   registeredAt: string
 }
-export type Profile2 = {
+export type NamestoneProfile = {
   tokenId: string
   name: string
   label: string
