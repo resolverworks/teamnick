@@ -1,4 +1,3 @@
-import { getNameByTokenId } from '@/lib/ponder'
 import { NextRequest, NextResponse } from 'next/server'
 import z from 'zod'
 
@@ -23,7 +22,16 @@ export async function GET(
 
   const { id } = safeParse.data
 
-  const profile = await getNameByTokenId(id)
+  const queryParams = new URLSearchParams({
+    'cache-bust': Date.now().toString(),
+  })
+  const nameJson = await fetch(
+    `https://namestone.xyz/api/public_v1/get-name-by-token-id?domain=teamnick.eth&token_id=${id}&${queryParams.toString()}`,
+    { method: 'GET' }
+  )
+
+  let profile = null
+  if (nameJson.status === 200) profile = (await nameJson.json()) as any
 
   if (!profile) {
     return NextResponse.json({ error: 'Invalid token id' }, { status: 404 })

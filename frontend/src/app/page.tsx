@@ -11,10 +11,9 @@ import {
 import { normalize } from 'viem/ens'
 import { useDebounce } from 'usehooks-ts'
 import { Button, Input, Typography, Skeleton } from '@ensdomains/thorin'
-import React, { useState, useEffect, use } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 
 import { l2Registry } from '@/lib/l2-registry'
-import { usePonder } from '@/hooks/usePonder'
 import NavBar from './components/NavBar'
 
 const validateInput = (input: string) => {
@@ -36,8 +35,6 @@ export default function Home() {
   const [recentName, setRecentName] = useState('')
   const [normalizationError, setNormalizationError] = useState('')
   const [page, setPage] = useState(1)
-
-  const ponder = usePonder()
 
   const { data: isAvailable } = useContractRead({
     ...l2Registry,
@@ -84,10 +81,8 @@ export default function Home() {
 
   useEffect(() => {
     if (receipt.isSuccess) {
-      // wait 1 second for ponder to index the transaction
       setTimeout(() => {
         refetchSupply()
-        ponder.refetch()
         setPage(1)
       }, 1000)
     }
@@ -205,20 +200,37 @@ function SubNameTable({
   page: number
 }) {
   const namesPerPage = 25
+  const [nameList, setNameList] = useState([])
   const [currentPage, setCurrentPage] = useState(page)
-  const ponder = usePonder((currentPage - 1) * 25)
+  const fetchingRef = useRef(false)
 
   useEffect(() => {
-    ponder.refetch()
-  }, [currentPage])
-  //const currentNames = ponder.profiles
+    async function fetchUserRecords() {
+      console.log('fetching')
+      fetchingRef.current = true
+      const nameJson = await fetch(
+        'https://namestone.xyz/api/public_v1/get-onchain-names?domain=teamnick.eth',
+        { method: 'GET' }
+      )
+      let names = []
+      if (nameJson.status === 200) names = await nameJson.json()
+      return names
+    }
+
+    if (nameList.length === 0 && !fetchingRef.current) {
+      fetchUserRecords().then((data) => {
+        console.log('fetch complete')
+        setNameList(data)
+      })
+    }
+  }, [nameList])
 
   const totalPages = Math.ceil(nameCount / namesPerPage)
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
 
   const currentNames =
-    ponder.profiles === undefined
+    nameList.length === 0
       ? Array.from({ length: namesPerPage }, (_, index) => ({
           id: `dummy-${index}`,
           name: `Dummy Name ${index + 1}`,
@@ -226,9 +238,12 @@ function SubNameTable({
           address: '0x0000000000000000000000000000000000000000',
           owner: '0x0000000000000000000000000000000000000000',
         }))
-      : ponder.profiles
+      : nameList.slice(
+          (currentPage - 1) * namesPerPage,
+          currentPage * namesPerPage
+        )
 
-  const loading = ponder.profiles === undefined
+  const loading = nameList.length === 0
 
   return (
     <>
@@ -264,7 +279,7 @@ function SubNameTable({
                       rel="noopener noreferrer"
                       className=" hover:text-blue-800 "
                     >
-                      {name.label}
+                      {name.name}
                       <span className="opacity-50">.teamnick.eth</span>
                     </a>
                   )}

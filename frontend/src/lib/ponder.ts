@@ -15,6 +15,17 @@ export type Profile = {
   address: string
   registeredAt: string
 }
+export type NamestoneProfile = {
+  tokenId: string
+  name: string
+  label: string
+  owner: string
+  textRecords: {
+    avatar: string
+  }
+  address: string
+  registeredAt: string
+}
 
 export const ponderUrl = 'https://teamnick-production.up.railway.app'
 
