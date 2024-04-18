@@ -83,7 +83,7 @@ async function generateImage(profile: Profile): Promise<ImageResponse> {
             textShadow: '2px 2px 12px rgba(0, 0, 0, 0.1)',
           }}
         >
-          <span>{profile.label}.</span>
+          <span>{profile.name}.</span>
 
           <span
             style={{
