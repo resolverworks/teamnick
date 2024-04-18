@@ -16,7 +16,7 @@
 
 ### Tech Used
 
-[Ponder](https://ponder.sh/)
+[Ponder](https://ponder.sh/) // Deprecated
 
 [Next.js](https://nextjs.org/)
 

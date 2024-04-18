@@ -19,7 +19,7 @@ import {
   RecordItem,
   Spinner,
 } from '@ensdomains/thorin'
-import { Profile } from '@/lib/ponder'
+import { Profile2 } from '@/lib/ponder'
 import NavBar from '../components/NavBar'
 import { l2Registry } from '@/lib/l2-registry'
 import { start } from 'repl'
@@ -47,27 +47,50 @@ export default function Records() {
 function DisplayRecords() {
   const { address } = useAccount()
   const [selectedName, setSelectedName] = useState<string | null>(null)
-  const [selectedProfile, setSelectedProfile] = useState<Profile | null>(null)
+  const [selectedProfile, setSelectedProfile] = useState<Profile2 | null>(null)
+  const [nameList, setNameList] = useState<Profile[]>([])
 
-  const ponder = usePonder(0, address)
+  async function fetchUserRecords() {
+    const nameJson = await fetch(
+      'https://namestone.xyz/api/public_v1/get-onchain-names?domain=cu-cypherpunk.eth&addresses=' +
+        address,
+      { method: 'GET' }
+    )
+    let names: any = null
+    if (nameJson.status === 200) names = await nameJson.json()
+    if (names === null || names.length === 0 || !names) {
+      return null
+    }
+    return names
+  }
+
+  useEffect(() => {
+    fetchUserRecords().then((names) => {
+      if (names) {
+        setNameList(names)
+      }
+    })
+  }, [address])
 
   const filteredNames =
-    ponder.profiles
+    nameList
       ?.filter(
         (profile) => profile.owner.toLowerCase() === address?.toLowerCase()
       )
       .map((profile) => ({
-        value: profile.id, // Assuming you want to use the profile ID as the value
+        value: profile.tokenId, // Assuming you want to use the profile ID as the value
         label: profile.name, // The name will be shown in the dropdown
       })) || []
 
   useEffect(() => {
-    if (ponder.profiles && selectedName) {
+    console.log(nameList, selectedName)
+    if (nameList && selectedName) {
       // prettier-ignore
-      const filteredProfiles = ponder.profiles.filter((profile) => profile.id === selectedName) || []
+      const filteredProfiles = nameList.filter((profile) => profile.tokenId === selectedName) || []
+
       setSelectedProfile(filteredProfiles[0])
     }
-  }, [selectedName, ponder.profiles])
+  }, [selectedName, nameList])
 
   return (
     <div className="w-full pt-4 max-w-xl  mx-auto  relative min-w-[360px]">
@@ -89,11 +112,17 @@ function DisplayRecords() {
             </RecordItem>
             <div className="flex flex-row">
               <div className=" max-w-[75px] min-w-[75px] mx-2 my-auto">
-                <Avatar label="Noun 97" src={selectedProfile.avatar} />
+                <Avatar
+                  label="Noun 97"
+                  src={selectedProfile.textRecords.avatar}
+                />
               </div>
               <div className="grow my-auto">
-                <RecordItem keyLabel="Avatar" value={selectedProfile.avatar}>
-                  {selectedProfile.avatar.substring(0, 30) + '...'}
+                <RecordItem
+                  keyLabel="Avatar"
+                  value={selectedProfile.textRecords.avatar}
+                >
+                  {selectedProfile.textRecords.avatar.substring(0, 30) + '...'}
                 </RecordItem>
               </div>
             </div>
@@ -109,7 +138,7 @@ function DisplayRecords() {
 
             <UpdateRecords
               selectedProfile={selectedProfile}
-              refetchPonder={ponder.refetch}
+              refetchNames={fetchUserRecords}
             />
           </>
         )}
@@ -120,10 +149,10 @@ function DisplayRecords() {
 
 function UpdateRecords({
   selectedProfile,
-  refetchPonder,
+  refetchNames,
 }: {
-  selectedProfile: Profile | undefined
-  refetchPonder: () => void
+  selectedProfile: Profile2 | undefined
+  refetchNames: () => void
 }) {
   const { address } = useAccount()
   const [isValidAddress, setIsValidAddress] = useState(false)
@@ -139,7 +168,7 @@ function UpdateRecords({
     functionName: 'setAddr',
     enabled: isValidAddress,
     args: selectedProfile
-      ? [BigInt(selectedProfile.id), ethAddress as Address]
+      ? [BigInt(selectedProfile.tokenId), ethAddress as Address]
       : undefined,
   })
 
@@ -150,7 +179,9 @@ function UpdateRecords({
     ...l2Registry,
     functionName: 'updateAvatar',
     enabled: isValidAvatar,
-    args: selectedProfile ? [BigInt(selectedProfile.id), avatar] : undefined,
+    args: selectedProfile
+      ? [BigInt(selectedProfile.tokenId), avatar]
+      : undefined,
   })
 
   const updateAvatarTx = useContractWrite(prepareUpdateAvatar.config)
@@ -184,7 +215,7 @@ function UpdateRecords({
 
       // wait 1 second for ponder to index the transaction
       setTimeout(() => {
-        refetchPonder()
+        refetchNames()
       }, 1000)
     }
   }, [updateAvatarReceipt.isSuccess, setAddrReceipt.isSuccess])
