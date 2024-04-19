@@ -48,7 +48,7 @@ function DisplayRecords() {
   const [selectedName, setSelectedName] = useState<string | null>(null)
   const [selectedProfile, setSelectedProfile] =
     useState<NamestoneProfile | null>(null)
-  const [nameList, setNameList] = useState<Profile[]>([])
+  const [nameList, setNameList] = useState<NamestoneProfile[]>([])
 
   async function fetchUserRecords() {
     const nameJson = await fetch(
