@@ -52,7 +52,7 @@ function DisplayRecords() {
 
   async function fetchUserRecords() {
     const nameJson = await fetch(
-      'https://namestone.xyz/api/public_v1/get-onchain-names?domain=cu-cypherpunk.eth&addresses=' +
+      'https://namestone.xyz/api/public_v1/get-onchain-names?domain=teamnick.eth&addresses=' +
         address,
       { method: 'GET' }
     )
@@ -61,6 +61,7 @@ function DisplayRecords() {
     if (names === null || names.length === 0 || !names) {
       return null
     }
+    console.log(names)
     return names
   }
 
