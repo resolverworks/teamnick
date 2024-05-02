@@ -273,7 +273,7 @@ function SubNameTable({
                     <Skeleton loading={true}>123456789</Skeleton>
                   ) : (
                     <a
-                      href={`https://app.ens.domains/${name.name}`}
+                      href={`https://app.ens.domains/${name.name}.teamnick.eth`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className=" hover:text-blue-800 "
