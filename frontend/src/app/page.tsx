@@ -183,6 +183,15 @@ export default function Home() {
 
           return <p>Names don't mint themselves. Clickety click.</p>
         })()}
+        <div>
+          <p className="text-center text-gray-400 text-base">
+            Namse are trust-minimized using the EVM GATEWAY.
+          </p>
+          <p className="text-center text-gray-400 text-base">
+            There is a 5 hour delay between minting and the name being
+            available.
+          </p>
+        </div>
       </div>
       <div className="py-10">
         <SubNameTable nameCount={nameCount} page={page} />
