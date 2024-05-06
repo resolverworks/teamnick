@@ -185,7 +185,7 @@ export default function Home() {
         })()}
         <div>
           <p className="text-center text-gray-400 text-base">
-            Namse are trust-minimized using the EVM GATEWAY.
+            Names are trust-minimized using the EVM GATEWAY.
           </p>
           <p className="text-center text-gray-400 text-base">
             There is a 5 hour delay between minting and the name being

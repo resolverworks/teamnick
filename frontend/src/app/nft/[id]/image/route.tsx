@@ -14,6 +14,9 @@ const baseUrl = process.env.VERCEL_URL
   ? `https://${PROD_URL}`
   : 'http://localhost:3000'
 
+// Cache to store generated images
+const imageCache = new Map<string, ImageResponse>()
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -25,6 +28,11 @@ export async function GET(
   }
 
   const { id } = safeParse.data
+
+  // Check if the image is already cached
+  if (imageCache.has(id)) {
+    return imageCache.get(id) as ImageResponse
+  }
 
   const queryParams = new URLSearchParams({
     'cache-bust': Date.now().toString(),
@@ -38,6 +46,8 @@ export async function GET(
   if (nameJson.status === 200) profile = (await nameJson.json()) as any
 
   const image = await generateImage(profile)
+  // Cache the generated image
+  imageCache.set(id, image)
   return image
 }
 
