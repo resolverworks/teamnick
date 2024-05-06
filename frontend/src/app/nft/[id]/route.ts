@@ -5,7 +5,7 @@ const schema = z.object({
   id: z.string().regex(/^[0-9]+$/),
 })
 
-const PROD_URL = 'teamnick.xyz'
+const PROD_URL = 'www.teamnick.xyz'
 const baseUrl = process.env.VERCEL_URL
   ? `https://${PROD_URL}`
   : 'http://localhost:3000'
