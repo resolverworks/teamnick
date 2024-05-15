@@ -15,6 +15,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { l2Registry } from '@/lib/l2-registry'
 import NavBar from './components/NavBar'
 import { register } from 'module'
+import { set } from 'lodash'
 
 const validateInput = (input: string) => {
   if (input.length < 2 || input.length > 10) {
@@ -36,6 +37,7 @@ export default function Home() {
   const [recentName, setRecentName] = useState('')
   const [normalizationError, setNormalizationError] = useState('')
   const [page, setPage] = useState(1)
+  const [reloadTable, setReloadTable] = useState(false)
 
   const { data: isAvailable } = useContractRead({
     ...l2Registry,
@@ -85,7 +87,8 @@ export default function Home() {
       setTimeout(() => {
         refetchSupply()
         setPage(1)
-      }, 1000)
+        setReloadTable(true)
+      }, 20000)
     }
   }, [receipt.isSuccess])
 
@@ -181,7 +184,12 @@ export default function Home() {
         })()}
       </div>
       <div className="py-10">
-        <SubNameTable nameCount={nameCount} page={page} />
+        <SubNameTable
+          nameCount={nameCount}
+          page={page}
+          reloadTable={reloadTable}
+          setReloadTable={setReloadTable}
+        />
       </div>
     </main>
   )
@@ -190,9 +198,13 @@ export default function Home() {
 function SubNameTable({
   nameCount,
   page,
+  reloadTable,
+  setReloadTable,
 }: {
   nameCount: number
   page: number
+  reloadTable: boolean
+  setReloadTable: any
 }) {
   const namesPerPage = 25
   const [nameList, setNameList] = useState([])
@@ -212,13 +224,19 @@ function SubNameTable({
       return names
     }
 
-    if (nameList.length === 0 && !fetchingRef.current) {
+    console.log(reloadTable, nameList.length, fetchingRef.current)
+    if (
+      (nameList.length === 0 || reloadTable == true) &&
+      !fetchingRef.current
+    ) {
       fetchUserRecords().then((data) => {
+        fetchingRef.current = false
+        setReloadTable(false)
         console.log('fetch complete')
         setNameList(data)
       })
     }
-  }, [nameList])
+  }, [nameList, reloadTable])
 
   const totalPages = Math.ceil(nameCount / namesPerPage)
 
@@ -261,7 +279,7 @@ function SubNameTable({
           <tbody>
             {currentNames?.map((name, index) => (
               <tr
-                key={name.id}
+                key={index}
                 className={`${
                   index % 2 === 0 ? 'bg-gray-50' : ''
                 } border-b border-gray-200`}
