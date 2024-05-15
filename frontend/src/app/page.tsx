@@ -14,6 +14,7 @@ import React, { useState, useEffect, useRef } from 'react'
 
 import { l2Registry } from '@/lib/l2-registry'
 import NavBar from './components/NavBar'
+import { register } from 'module'
 
 const validateInput = (input: string) => {
   if (input.length < 2 || input.length > 10) {
@@ -31,6 +32,7 @@ export default function Home() {
   const { address } = useAccount()
   const [name, setName] = useState('')
   const debouncedName = useDebounce(name, 500)
+
   const [recentName, setRecentName] = useState('')
   const [normalizationError, setNormalizationError] = useState('')
   const [page, setPage] = useState(1)
@@ -157,18 +159,8 @@ export default function Home() {
         {(() => {
           if (receipt.isSuccess) {
             return (
-              <p>
-                {'success! '}
-                <a
-                  href={`https://app.ens.domains/${recentName}.teamnick.eth`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className=" hover:text-blue-800 font-bold "
-                >
-                  {recentName}
-                  <span className=" font-normal">.teamnick.eth </span>
-                </a>
-                is live!
+              <p className="text-center text-gray-400 text-base">
+                Minted! Name will be ready for use in approx 5 hours.
               </p>
             )
           }
@@ -181,17 +173,12 @@ export default function Home() {
             return <p>processing...</p>
           }
 
-          return <p>Names don't mint themselves. Clickety click.</p>
+          return (
+            <p className="text-center text-gray-400 text-base">
+              There is a 5 hour delay until names are confimed on mainnet.
+            </p>
+          )
         })()}
-        <div>
-          <p className="text-center text-gray-400 text-base">
-            Names are trust-minimized using the EVM GATEWAY.
-          </p>
-          <p className="text-center text-gray-400 text-base">
-            There is a 5 hour delay between minting and the name being
-            available.
-          </p>
-        </div>
       </div>
       <div className="py-10">
         <SubNameTable nameCount={nameCount} page={page} />
@@ -245,6 +232,7 @@ function SubNameTable({
           label: `Dummy Label ${index + 1}`,
           address: '0x0000000000000000000000000000000000000000',
           owner: '0x0000000000000000000000000000000000000000',
+          registeredAt: '0',
         }))
       : nameList.slice(
           (currentPage - 1) * namesPerPage,
@@ -267,6 +255,7 @@ function SubNameTable({
                 Eth Address
               </th>
               <th className="text-right pl-2 pr-4 py-2 opacity-60">Owner</th>
+              <th className="text-right pl-2 pr-4 py-2 opacity-60">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -311,6 +300,13 @@ function SubNameTable({
                       explorerUrl="https://basescan.org/address"
                     />
                   )}
+                </td>
+                <td className="text-right pr-4 py-2">
+                  {loading ? (
+                    <Skeleton loading={true}>123456789</Skeleton>
+                  ) : (
+                    <CountdownTimer registeredAt={name.registeredAt} />
+                  )}{' '}
                 </td>
               </tr>
             ))}
@@ -401,5 +397,53 @@ const FormattedAddressLink = ({
     >
       {formattedAddress.toLowerCase()}
     </a>
+  )
+}
+
+function CountdownTimer({ registeredAt = '0' }) {
+  const [countdown, setCountdown] = useState('')
+  const fiveHours = 5 * 60 * 60 * 1000 // 5 hours in milliseconds
+
+  useEffect(() => {
+    const registrationTime = parseInt(registeredAt, 10) * 1000 // Convert Unix timestamp string to milliseconds
+    const intervalId = setInterval(() => {
+      const currentTime = Date.now() // Current time in milliseconds
+      const timeDifference = currentTime - registrationTime
+
+      if (timeDifference >= fiveHours) {
+        clearInterval(intervalId) // Stop the interval
+        setCountdown('ready')
+      } else {
+        const countdownTime = fiveHours - timeDifference
+        const hours = Math.floor(countdownTime / (60 * 60 * 1000))
+        const minutes = Math.floor(
+          (countdownTime % (60 * 60 * 1000)) / (60 * 1000)
+        )
+        const seconds = Math.floor((countdownTime % (60 * 1000)) / 1000)
+
+        // Format the countdown as H:MM:SS
+        setCountdown(`${hours}:${padZero(minutes)}:${padZero(seconds)}`)
+      }
+    }, 1000)
+
+    return () => clearInterval(intervalId) // Clean up interval on component unmount
+  }, [registeredAt])
+
+  function padZero(num = 0) {
+    return num < 10 ? '0' + num : num
+  }
+
+  return (
+    <div>
+      {countdown === 'ready' ? (
+        <div className="w-[70px] h-[27px] px-[13px] py-1 bg-[#F1FAED] rounded-[17px] justify-center items-center gap-[5px] inline-flex">
+          <div className="text-lime-500 text-base font-normal">Ready</div>
+        </div>
+      ) : (
+        <div className="w-[69px] h-[27px] px-2 py-1 bg-[#EFF6FE] rounded-[17px] border justify-center items-center gap-[5px] inline-flex">
+          <div className="text-blue-400 text-base font-normal">{countdown}</div>
+        </div>
+      )}
+    </div>
   )
 }
