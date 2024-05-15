@@ -37,7 +37,7 @@ export default function Home() {
   const [recentName, setRecentName] = useState('')
   const [normalizationError, setNormalizationError] = useState('')
   const [page, setPage] = useState(1)
-  const [reloadTable, setReloadTable] = useState(false)
+  const [nameList, setNameList] = useState([])
 
   const { data: isAvailable } = useContractRead({
     ...l2Registry,
@@ -84,10 +84,20 @@ export default function Home() {
 
   useEffect(() => {
     if (receipt.isSuccess) {
+      setNameList((nameList) => {
+        return [
+          {
+            name: recentName,
+            address: address,
+            owner: address,
+            registeredAt: Math.floor(Date.now() / 1000).toString(),
+          },
+          ...nameList,
+        ] as any
+      })
       setTimeout(() => {
         refetchSupply()
         setPage(1)
-        setReloadTable(true)
       }, 20000)
     }
   }, [receipt.isSuccess])
@@ -187,8 +197,8 @@ export default function Home() {
         <SubNameTable
           nameCount={nameCount}
           page={page}
-          reloadTable={reloadTable}
-          setReloadTable={setReloadTable}
+          nameList={nameList}
+          setNameList={setNameList}
         />
       </div>
     </main>
@@ -198,16 +208,15 @@ export default function Home() {
 function SubNameTable({
   nameCount,
   page,
-  reloadTable,
-  setReloadTable,
+  nameList,
+  setNameList,
 }: {
   nameCount: number
   page: number
-  reloadTable: boolean
-  setReloadTable: any
+  nameList: any[]
+  setNameList: any
 }) {
   const namesPerPage = 25
-  const [nameList, setNameList] = useState([])
   const [currentPage, setCurrentPage] = useState(page)
   const fetchingRef = useRef(false)
 
@@ -224,19 +233,14 @@ function SubNameTable({
       return names
     }
 
-    console.log(reloadTable, nameList.length, fetchingRef.current)
-    if (
-      (nameList.length === 0 || reloadTable == true) &&
-      !fetchingRef.current
-    ) {
+    if (nameList.length === 0 && !fetchingRef.current) {
       fetchUserRecords().then((data) => {
         fetchingRef.current = false
-        setReloadTable(false)
         console.log('fetch complete')
         setNameList(data)
       })
     }
-  }, [nameList, reloadTable])
+  }, [nameList])
 
   const totalPages = Math.ceil(nameCount / namesPerPage)
 
