@@ -232,7 +232,8 @@ function UpdateRecords({
       <div className="min-h-[20px] mx-auto">
         {' '}
         {setAddrReceipt.isLoading && <Spinner />}
-        {setAddrReceipt.isSuccess && 'Eth address updated successfully'}
+        {setAddrReceipt.isSuccess &&
+          'Eth address updated successfully. Change will be in effect in approx 5 hours.'}
       </div>
       <div className="mx-auto">
         <Button
@@ -252,7 +253,8 @@ function UpdateRecords({
       <div className="min-h-[20px] mx-auto">
         {' '}
         {updateAvatarReceipt.isLoading && <Spinner />}
-        {updateAvatarReceipt.isSuccess && 'Avatar updated successfully!'}
+        {updateAvatarReceipt.isSuccess &&
+          'Avatar updated successfully! Change will be in effect in approx 5 hours.'}
       </div>
       <div className="pb-4  mx-auto">
         <Button
